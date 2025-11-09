@@ -13,8 +13,9 @@ def load_imagenet_labels(url: str = None):
     Можно указать свой url или заменить на локальный файл.
     """
     if url is None:
-        url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
-
+        url = (
+            "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
+        )
     try:
         with urllib.request.urlopen(url) as f:
             classes = [line.decode("utf-8").strip() for line in f.readlines()]
@@ -76,7 +77,11 @@ def get_preprocess_transform():
     ])
 
 
-def predict_frame(frame_bgr, model, preprocess, classes, device: torch.device):
+def predict_frame(frame_bgr,
+                model, 
+                preprocess, 
+                classes, 
+                device: torch.device):
     """
     Делает предсказание для одного кадра (BGR от OpenCV).
     Возвращает (label, prob).
@@ -90,7 +95,10 @@ def predict_frame(frame_bgr, model, preprocess, classes, device: torch.device):
         top_prob, top_idx = probs.topk(1, dim=1)
 
     cls_id = top_idx.item()
-    label = classes[cls_id] if classes and cls_id < len(classes) else str(cls_id)
+    label = (
+        classes[cls_id] if classes and cls_id < len(classes)
+        else str(cls_id)
+    )
     prob = top_prob.item()
     return label, prob
 
@@ -117,7 +125,9 @@ def process_video(video_path: str,
             break
 
         if frame_idx % frame_step == 0:
-            label, prob = predict_frame(frame, model, preprocess, classes, device)
+            label, prob = (
+                predict_frame(frame, model, preprocess, classes, device)
+            )
             print(f"Кадр {frame_idx}: {label} (p={prob:.3f})")
 
         frame_idx += 1
@@ -127,36 +137,39 @@ def process_video(video_path: str,
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Классификация кадров видео с помощью предобученной CNN."
+        description = (
+            "Классификация кадров видео с помощью предобученной CNN."
+        )
     )
     parser.add_argument(
         "--video", "-v",
-        required=True,
-        help="Путь к входному видеофайлу"
+        required = True,
+        help = "Путь к входному видеофайлу"
     )
     parser.add_argument(
         "--frame-step", "-s",
-        type=int,
-        default=30,
-        help="Брать каждый N-й кадр (по умолчанию 30)"
+        type = int,
+        default = 30,
+        help = "Брать каждый N-й кадр (по умолчанию 30)"
     )
     parser.add_argument(
         "--model",
-        type=str,
-        default="resnet18",
-        help="Имя модели torchvision (resnet18, resnet50; по умолчанию resnet18)"
+        type = str,
+        default = "resnet18",
+        help = "Имя модели torchvision (resnet18,\
+              resnet50; по умолчанию resnet18)"
     )
     parser.add_argument(
         "--device",
-        type=str,
-        default=None,
-        help="Устройство: cpu или cuda (по умолчанию авто)"
+        type = str,
+        default = None,
+        help = "Устройство: cpu или cuda (по умолчанию авто)"
     )
     parser.add_argument(
         "--classes-url",
-        type=str,
-        default=None,
-        help="URL для списка классов ImageNet (опционально)"
+        type = str,
+        default = None,
+        help = "URL для списка классов ImageNet (опционально)"
     )
     return parser.parse_args()
 

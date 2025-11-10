@@ -52,15 +52,15 @@ if uploaded_file is not None:
     # Отображение загруженного изображения
     image = Image.open(uploaded_file)
     st.image(image, caption="Загруженное изображение", use_column_width=True)
-    
+
     # Предобработка изображения
     processed_image = preprocess_image(image)
-    
+
     # Предсказание
     predictions = model.predict(processed_image)
     # Декодирование результатов
     decoded_predictions = decode_predictions(predictions, top=3)[0]
-    
+
     # Вывод результатов
     st.subheader("Результаты классификации:")
     for i, (imagenet_id, label, score) in enumerate(decoded_predictions):

@@ -78,11 +78,13 @@ def get_preprocess_transform():
     ])
 
 
-def predict_frame(frame_bgr,
-                model,
-                preprocess,
-                classes,
-                device: torch.device):
+def predict_frame(
+        frame_bgr,
+        model,
+        preprocess,
+        classes,
+        device: torch.device
+):
     """
     Делает предсказание для одного кадра (BGR от OpenCV).
     Возвращает (label, prob).

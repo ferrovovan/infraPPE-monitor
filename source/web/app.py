@@ -2,17 +2,8 @@ import streamlit as st
 import tempfile
 import time
 
-import sys
-from pathlib import Path
-
-# Добавляем корень проекта в sys.path
-root_path = Path(__file__).resolve().parents[2]
-if str(root_path) not in sys.path:
-    sys.path.append(str(root_path))
-
 from source.data.load_video import frame_generator
 from source.inference.ppe_detector import detect_ppe
-
 
 
 st.title("PPE Monitor — Prototype")

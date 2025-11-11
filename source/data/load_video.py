@@ -1,6 +1,7 @@
 import cv2
 from source.data.simulate_ir import rgb_to_ir
 
+
 def frame_generator(video_path):
     """
     Генератор кадров с индексом.
@@ -18,4 +19,3 @@ def frame_generator(video_path):
         yield idx, rgb_to_ir(frame)
         idx += 1
     cap.release()
-

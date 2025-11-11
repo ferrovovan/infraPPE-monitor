@@ -1,5 +1,6 @@
 import random
 
+
 def detect_ppe(frame_id, frame):
     """
     Простая заглушка детектора.
@@ -9,4 +10,3 @@ def detect_ppe(frame_id, frame):
         "frame_id": frame_id,
         "ppe_detected": random.choice([True, False]),
     }
-

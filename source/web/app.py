@@ -1,4 +1,6 @@
 import streamlit as st
+import tempfile
+import time
 
 import sys
 from pathlib import Path
@@ -11,8 +13,6 @@ if str(root_path) not in sys.path:
 from source.data.load_video import frame_generator
 from source.inference.ppe_detector import detect_ppe
 
-import tempfile
-import time
 
 
 st.title("PPE Monitor — Prototype")
@@ -24,7 +24,9 @@ if video:
 
     if start_btn:
         # Сохраняем видео во временный файл
-        temp_video_path = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+        temp_video_path = tempfile.NamedTemporaryFile(
+                delete=False, suffix=".mp4"
+        )
         temp_video_path.write(video.read())
         temp_video_path.close()
 
@@ -40,11 +42,14 @@ if video:
         for frame_id, frame in frame_generator(temp_video_path.name):
             res = detect_ppe(frame_id, frame)
 
-            frame_window.image(frame, caption=f"Кадр {frame_id}: {res['ppe_detected']}", channels="BGR")
+            frame_window.image(
+                    frame,
+                    caption=f"Кадр {frame_id}: {res['ppe_detected']}",
+                    channels="BGR"
+            )
             text_window.text(f"Обнаружено: {res['ppe_detected']}")
             progress.progress((frame_id + 1) / total_frames)
 
             time.sleep(1.0 / fps)
         total_time = time.time() - start_time
         st.success("Обработка завершена за {total_time:.1f} секунд!")
-

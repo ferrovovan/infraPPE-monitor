@@ -97,7 +97,26 @@ def update_metrics(placeholder, res: dict, inf_time: float):
 		st.metric("Инференс (мс)", f"{inf_time*1000:.1f}")
 		st.metric("Обнаружено", res['ppe_detected'])
 
+# 1. Функция, которая будет работать в отдельном потоке
+def process_video_in_background(video_path, total_frames):
+	for frame_id, frame in generate_frames(video_path):
+		t0 = time.time()
+		res = run_inference(frame_id, frame)
+		t1 = time.time()
 
+		# Вместо прямого вызова update_frame (это опасно из другого потока), 
+		# мы просто сохраняем результаты в session_state.
+		st.session_state['latest_frame'] = frame
+		st.session_state['latest_res'] = res
+		st.session_state['latest_inf_time'] = t1 - t0
+		st.session_state['current_frame_id'] = frame_id
+		
+		# Задержка, которая не блокирует основной UI
+		time.sleep(1.0 / fps)
+
+	st.session_state['processing_complete'] = True
+
+"""
 if start_button and video:
 	# Сохраняем видео во временный файл
 	temp_video_path = tempfile.NamedTemporaryFile(
@@ -134,7 +153,52 @@ if start_button and video:
 
 	total_time = time.time() - start_time
 	st.success("Обработка завершена за {total_time:.1f} секунд!")
+"""
 
+if 'processing_running' not in st.session_state:
+	st.session_state['processing_running'] = False
+	st.session_state['processing_complete'] = False
+	# Инициализируем другие переменные session_state
+
+if start_button and video and not st.session_state['processing_running']:
+	# Сохраняем видео во временный файл
+	temp_video_path = tempfile.NamedTemporaryFile(
+			delete=False #, suffix=".mp4"
+	)
+	temp_video_path.write(video.read())
+	temp_video_path.close()
+	total_frames = 1000
+	
+	# Запуск обработки в новом потоке при первом запуске
+	thread = threading.Thread(
+		target=process_video_in_background, 
+		args=(temp_video_path.name, total_frames)
+	)
+	thread.daemon = True # Поток завершится при закрытии приложения
+	thread.start()
+	st.session_state['processing_running'] = True
+
+if 'latest_frame' in st.session_state:
+	# Здесь вызываются функции обновления UI в основном потоке Streamlit
+	update_frame(
+		frame_placeholder, 
+		st.session_state['latest_frame'], 
+		st.session_state['current_frame_id'], 
+		st.session_state['latest_res']
+	)
+	update_metrics(
+		metrics_placeholder, 
+		st.session_state['latest_res'], 
+		st.session_state['latest_inf_time']
+	)
+	
+	progress_val = (st.session_state['current_frame_id'] + 1) / total_frames
+	progress.progress(progress_val)
+	
+	if not st.session_state['processing_complete']:
+		# ВАЖНО: Принудительный перезапуск Streamlit, чтобы UI обновился 
+		# и показал последние данные из session_state
+		st.rerun()
 
 # =============================
 #     ИСТОРИЯ СОБЫТИЙ
@@ -154,7 +218,7 @@ if st.session_state.history:
 st.markdown("---")
 st.markdown(
 	"<p style='text-align: center; color: grey;'>"
-	"CV-10 • ИИ-контроль СИЗ в ИК-диапазоне" #  • Работает без интернета
+	"CV-10 • ИИ-контроль СИЗ в ИК-диапазоне • Работает без интернета"
 	"</p>",
 	unsafe_allow_html=True
 )

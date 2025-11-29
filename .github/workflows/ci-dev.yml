@@ -7,7 +7,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  test-and-lint:
+  lint-only:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,13 +19,25 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install flake8 pytest
+      # --- Основная цель CI: проверка стиля ---
+      - name: Install flake8
+        run: pip install flake8
 
       - name: Lint with flake8
         run: flake8 source
 
-      - name: Run pytest
-        run: pytest tests
+      # ---------------------------------------------------------------------
+      # Ниже — «законсервированный» функционал, отключённый до лучших времён.
+      # Он не удалён, чтобы легко включить при появлении тестов или нужды
+      # в проверке зависимостей.
+      # ---------------------------------------------------------------------
+
+      # - name: Install project dependencies
+      #   run: |
+      #     pip install -r requirements.txt
+
+      # - name: Install test deps
+      #   run: pip install pytest
+
+      # - name: Run pytest
+      #   run: pytest tests

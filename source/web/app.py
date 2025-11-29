@@ -27,20 +27,21 @@ from inference_source import frame_generator, ir_frame_generator, run_inference
 # # TODO
 #  --- 1. Инициализация session_state ---
 # if 'processing_state' not in st.session_state:
-#     st.session_state.processing_state = 'idle' # 'idle', 'running', 'stopped', 'completed'
-# 
+#     st.session_state.processing_state = 'idle'
+#     # 'idle', 'running', 'stopped', 'completed'
+#
 #  --- 2. Функции обратного вызова ---
 # def set_state_running():
 #     st.session_state.processing_state = 'running'
-# 
+#
 # def set_state_stopped():
 #     st.session_state.processing_state = 'stopped'
-# 
+#
 # # TODO
 #  --- История ---
 # if "history" not in st.session_state:
 # 	st.session_state.history = []
-# 
+#
 # if "stats" not in st.session_state:
 # 	st.session_state.stats = {
 # 		"total": 0,
@@ -48,7 +49,7 @@ from inference_source import frame_generator, ir_frame_generator, run_inference
 # 		"mask_no": 0,
 # 		"critical": 0
 # 	}
-# 
+#
 # =============================
 #      ЗАГОЛОВОК И ШАПКА
 # =============================
@@ -115,6 +116,7 @@ def update_frame(placeholder, frame, frame_id: int, res: dict):
 			channels="BGR"
 		)
 
+
 def update_metrics(placeholder, res: dict, inf_time: float):
 	# Используем with placeholder: для очистки контейнера и замены содержимого
 	with placeholder:
@@ -126,7 +128,7 @@ def update_metrics(placeholder, res: dict, inf_time: float):
 if start_button and video:
 	# Сохраняем видео во временный файл
 	temp_video_path = tempfile.NamedTemporaryFile(
-			delete=False #, suffix=".mp4"
+		delete=False  # , suffix=".mp4"
 	)
 	temp_video_path.write(video.read())
 	temp_video_path.close()
@@ -134,10 +136,10 @@ if start_button and video:
 	# окошки
 	col_left, col_right = st.columns([1.3, 1])	
 	with col_left:
-		frame_placeholder   = st.empty() # область для обновления кадра
+		frame_placeholder   = st.empty()  # область для обновления кадра
 	with col_right:
-		metrics_placeholder = st.empty() # область для статистик
-	
+		metrics_placeholder = st.empty()  # область для статистик
+
 	# TODO: Остановка цикла, без "отмены" start_button
 	# Нажатие кнопки (в Steamlit) перезапускает весь скрипт,
 	# отменяя прошлое состояние start_button.
@@ -150,7 +152,7 @@ if start_button and video:
 
 	total_frames = 1000  # ЗАГЛУШКА
 	start_time = time.time()
-	
+
 	if infra_mode:
 		frame_gen = ir_frame_generator(temp_video_path.name)
 	else:
@@ -199,7 +201,7 @@ if start_button and video:
 st.markdown("---")
 st.markdown(
 	"<p style='text-align: center; color: grey;'>"
-	"CV-10 • ИИ-контроль СИЗ в ИК-диапазоне" #  • Работает без интернета
+	"CV-10 • ИИ-контроль СИЗ в ИК-диапазоне"  # • Работает без интернета
 	"</p>",
 	unsafe_allow_html=True
 )

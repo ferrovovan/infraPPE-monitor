@@ -147,9 +147,9 @@ if uploaded_file is not None:
         risk = "medium"
         title = "Нарушение"
         explanation = "Обнаружено несоответствие СИЗ"
-    
+
     st.session_state.stats["total"] += 1
-    
+
     # === Сохранение в историю ===
     st.session_state.history.append({
         "Время": timestamp,
@@ -159,7 +159,7 @@ if uploaded_file is not None:
         "Риск": title,
         "Действие": "Оповещение" if risk == "high" else "-"
     })
-    
+
     # === Вывод результата ===
     with col2:
         st.markdown("### Результат анализа")

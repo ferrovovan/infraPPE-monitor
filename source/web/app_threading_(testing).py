@@ -74,7 +74,7 @@ header_html = """
 </div>
 """
 st.markdown(header_html, unsafe_allow_html=True)
-#st.title("PPE Monitor — Prototype")
+# st.title("PPE Monitor — Prototype")
 st.markdown("---")
 
 
@@ -100,12 +100,14 @@ def update_frame(placeholder, frame, frame_id: int, res: dict):
 			channels="BGR"
 		)
 
+
 def update_metrics(placeholder, res: dict, inf_time: float):
 	# Используем with placeholder: для очистки контейнера и замены содержимого
 	with placeholder:
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time*1000:.1f}")
 		st.metric("Обнаружено", res['ppe_detected'])
+
 
 # 1. Функция, которая будет работать в отдельном потоке
 def process_video_in_background(video_path, total_frames):
@@ -120,50 +122,12 @@ def process_video_in_background(video_path, total_frames):
 		st.session_state['latest_res'] = res
 		st.session_state['latest_inf_time'] = t1 - t0
 		st.session_state['current_frame_id'] = frame_id
-		
+
 		# Задержка, которая не блокирует основной UI
 		time.sleep(1.0 / fps)
 
 	st.session_state['processing_complete'] = True
 
-"""
-if start_button and video:
-	# Сохраняем видео во временный файл
-	temp_video_path = tempfile.NamedTemporaryFile(
-			delete=False #, suffix=".mp4"
-	)
-	temp_video_path.write(video.read())
-	temp_video_path.close()
-
-	# окошки
-	col_left, col_right = st.columns([1.3, 1])	
-	with col_left:
-		frame_placeholder   = st.empty() # область для обновления кадра
-	with col_right:
-		metrics_placeholder = st.empty() # область для статистик
-	progress = st.progress(0)   # полоса прогресса
-
-	total_frames = 1000  # ЗАГЛУШКА
-	start_time = time.time()
-
-	# обработка по кадрово
-	for frame_id, frame in generate_frames(temp_video_path.name):
-		t0 = time.time()
-		res = run_inference(frame_id, frame)
-		t1 = time.time()
-		
-		# Обновление блоков
-		update_frame(frame_placeholder, frame, frame_id, res)
-		update_metrics(metrics_placeholder, res, t1 - t0)
-	        
-		progress.progress((frame_id + 1) / total_frames)
-		
-		# Задержка, чтобы не нагружать.
-		time.sleep(1.0 / fps)
-
-	total_time = time.time() - start_time
-	st.success("Обработка завершена за {total_time:.1f} секунд!")
-"""
 
 if 'processing_running' not in st.session_state:
 	st.session_state['processing_running'] = False
@@ -173,25 +137,33 @@ if 'processing_running' not in st.session_state:
 if start_button and video and not st.session_state['processing_running']:
 	# Сохраняем видео во временный файл
 	temp_video_path = tempfile.NamedTemporaryFile(
-			delete=False #, suffix=".mp4"
+		delete=False  # , suffix=".mp4"
 	)
 	temp_video_path.write(video.read())
 	temp_video_path.close()
 	total_frames = 1000
-	
+
+	# окошки
+	col_left, col_right = st.columns([1.3, 1])	
+	with col_left:
+		frame_placeholder   = st.empty()  # область для обновления кадра
+	with col_right:
+		metrics_placeholder = st.empty()  # область для статистик
+	progress = st.progress(0)   # полоса прогресса
+
 	# Запуск обработки в новом потоке при первом запуске
 	thread = threading.Thread(
 		target=process_video_in_background, 
 		args=(temp_video_path.name, total_frames)
 	)
-	thread.daemon = True # Поток завершится при закрытии приложения
+	thread.daemon = True  # Поток завершится при закрытии приложения
 	thread.start()
 	st.session_state['processing_running'] = True
 
 if 'latest_frame' in st.session_state:
 	# Здесь вызываются функции обновления UI в основном потоке Streamlit
 	update_frame(
-		frame_placeholder, 
+		frame_placeholder,
 		st.session_state['latest_frame'], 
 		st.session_state['current_frame_id'], 
 		st.session_state['latest_res']

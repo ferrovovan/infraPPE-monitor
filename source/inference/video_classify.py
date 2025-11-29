@@ -79,11 +79,8 @@ def get_preprocess_transform():
 
 
 def predict_frame(
-		frame_bgr,
-		model,
-		preprocess,
-		classes,
-		device: torch.device
+	frame_bgr, model, preprocess,
+	classes, device: torch.device
 ):
 	"""
 	Делает предсказание для одного кадра (BGR от OpenCV).
@@ -106,12 +103,11 @@ def predict_frame(
 	return label, prob
 
 
-def process_video(video_path: str,
-				frame_step: int,
-				model,
-				preprocess,
-				classes,
-				device: torch.device):
+def process_video(
+	video_path: str, frame_step: int,
+	model, preprocess, classes,
+	device: torch.device
+):
 	"""
 	Читает видео, берет каждый N-й кадр и выводит топ-1 предсказание.
 	"""

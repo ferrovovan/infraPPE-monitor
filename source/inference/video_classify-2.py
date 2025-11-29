@@ -2,9 +2,9 @@
 import torch
 import torchvision.transforms as transforms
 from torchvision import models
-#from PIL import Image
-#import cv2
-#import numpy as np
+# from PIL import Image
+# import cv2
+# import numpy as np
 import os
 
 # Путь к локальной модели

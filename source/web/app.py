@@ -1,6 +1,5 @@
 import streamlit as st
 import tempfile
-import threading
 import time
 from inference_source import frame_generator, ir_frame_generator, run_inference
 
@@ -23,33 +22,33 @@ from inference_source import frame_generator, ir_frame_generator, run_inference
 #      ИНИЦИАЛИЗАЦИЯ st.session_state
 # =============================
 #
-## st.session_state - это оперативная память сеанса
-#
-## TODO
-# --- 1. Инициализация session_state ---
-#if 'processing_state' not in st.session_state:
-#    st.session_state.processing_state = 'idle' # 'idle', 'running', 'stopped', 'completed'
-#
-# --- 2. Функции обратного вызова ---
-#def set_state_running():
-#    st.session_state.processing_state = 'running'
-#
-#def set_state_stopped():
-#    st.session_state.processing_state = 'stopped'
-#
-## TODO
-# --- История ---
-#if "history" not in st.session_state:
-#	st.session_state.history = []
-#
-#if "stats" not in st.session_state:
-#	st.session_state.stats = {
-#		"total": 0,
-#		"helmet_no": 0,
-#		"mask_no": 0,
-#		"critical": 0
-#	}
+# st.session_state - это оперативная память сеанса
 
+# # TODO
+#  --- 1. Инициализация session_state ---
+# if 'processing_state' not in st.session_state:
+#     st.session_state.processing_state = 'idle' # 'idle', 'running', 'stopped', 'completed'
+# 
+#  --- 2. Функции обратного вызова ---
+# def set_state_running():
+#     st.session_state.processing_state = 'running'
+# 
+# def set_state_stopped():
+#     st.session_state.processing_state = 'stopped'
+# 
+# # TODO
+#  --- История ---
+# if "history" not in st.session_state:
+# 	st.session_state.history = []
+# 
+# if "stats" not in st.session_state:
+# 	st.session_state.stats = {
+# 		"total": 0,
+# 		"helmet_no": 0,
+# 		"mask_no": 0,
+# 		"critical": 0
+# 	}
+# 
 # =============================
 #      ЗАГОЛОВОК И ШАПКА
 # =============================
@@ -64,10 +63,14 @@ st.set_page_config(
 # === Стили ===
 st.markdown("""
 <style>
-	.big-font {font-size: 42px !important; font-weight: bold; color: #1E3A8A;}
-	.risk-low {background-color: #DCFCE7; padding: 20px; border-radius: 12px; border-left: 6px solid #22C55E;}
-	.risk-medium {background-color: #FEF3C7; padding: 20px; border-radius: 12px; border-left: 6px solid #F59E0B;}
-	.risk-high {background-color: #FEE2E2; padding: 20px; border-radius: 12px; border-left: 6px solid #EF4444;}
+	.big-font {font-size: 42px !important;
+	 font-weight: bold; color: #1E3A8A;}
+	.risk-low {background-color: #DCFCE7; padding: 20px;
+	 border-radius: 12px; border-left: 6px solid #22C55E;}
+	.risk-medium {background-color: #FEF3C7; padding: 20px;
+	 border-radius: 12px; border-left: 6px solid #F59E0B;}
+	.risk-high {background-color: #FEE2E2; padding: 20px;
+	 border-radius: 12px; border-left: 6px solid #EF4444;}
 	.header-box {
 		background: linear-gradient(90deg, #1E3A8A, #3B82F6);
 		padding: 25px;
@@ -79,8 +82,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # шапка
-st.markdown('<div class="header-box"><h1>CV-10: ИИ-контроль СИЗ</h1><p>Работает в полной темноте, дыму и тумане</p></div>', unsafe_allow_html=True)
-#st.title("PPE Monitor — Prototype")
+header_html = """
+<div class="header-box">
+    <h1>CV-10: ИИ-контроль СИЗ</h1>
+    <p>Работает в полной темноте, дыму и тумане</p>
+</div>
+"""
+st.markdown(header_html, unsafe_allow_html=True)
+# st.title("PPE Monitor — Prototype")
 st.markdown("---")
 
 
@@ -153,14 +162,14 @@ if start_button and video:
 		t0 = time.time()
 		res = run_inference(frame_id, frame)
 		t1 = time.time()
-		
+
 		# Обновление блоков
 		update_frame(frame_placeholder, frame, frame_id, res)
 		update_metrics(metrics_placeholder, res, t1 - t0)
-	        
+
 	        # Полоса прогресса под колонками
 		progress.progress((frame_id + 1) / total_frames)
-		
+
 		# Задержка, чтобы не нагружать.
 		time.sleep(1.0 / fps)
 
@@ -174,10 +183,13 @@ if start_button and video:
 #
 # TODO
 # === История ===
-#if st.session_state.history:
+# if st.session_state.history:
 #	st.markdown("---")
 #	st.markdown("### История проверок")
-#	st.dataframe(st.session_state.history[-10:][::-1], use_container_width=True, hide_index=True)
+#	st.dataframe(
+#               st.session_state.history[-10:][::-1],
+#               use_container_width=True, hide_index=True
+#       )
 
 # =============================
 #     ПОДВАЛ СТРАНИЦЫ

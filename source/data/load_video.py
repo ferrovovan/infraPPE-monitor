@@ -22,11 +22,13 @@ def _base_video_generator(video_path: str):
         idx += 1
     cap.release()
 
+
 def frame_generator(video_path: str):
     """
     Публичный генератор стандартных (BGR/RGB) кадров.
     """
     yield from _base_video_generator(video_path)
+
 
 def ir_frame_generator(video_path: str):
     """
@@ -35,4 +37,3 @@ def ir_frame_generator(video_path: str):
     for idx, frame in _base_video_generator(video_path):
         ir_frame = rgb_to_ir(frame)
         yield idx, ir_frame
-

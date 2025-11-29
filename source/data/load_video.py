@@ -1,8 +1,10 @@
+# load_video.py
+
 import cv2
 from source.data.simulate_ir import rgb_to_ir
 
 
-def frame_generator(video_path):
+def _base_video_generator(video_path: str):
     """
     Генератор кадров с индексом.
     Возвращает пары (номер кадра, изображение np.ndarray)
@@ -16,6 +18,22 @@ def frame_generator(video_path):
         ret, frame = cap.read()
         if not ret:
             break
-        yield idx, rgb_to_ir(frame)
+        yield idx, frame
         idx += 1
     cap.release()
+
+
+def frame_generator(video_path: str):
+    """
+    Публичный генератор стандартных (BGR/RGB) кадров.
+    """
+    yield from _base_video_generator(video_path)
+
+
+def ir_frame_generator(video_path: str):
+    """
+    Публичный генератор ИК-кадров. Применяет трансформацию.
+    """
+    for idx, frame in _base_video_generator(video_path):
+        ir_frame = rgb_to_ir(frame)
+        yield idx, ir_frame

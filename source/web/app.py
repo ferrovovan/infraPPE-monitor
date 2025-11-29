@@ -2,7 +2,7 @@ import streamlit as st
 import tempfile
 import threading
 import time
-from inference_source import generate_frames, run_inference
+from inference_source import frame_generator, ir_frame_generator, run_inference
 
 #   app.py
 #   ├── Заголовок и шапка (строго, минималистично)
@@ -18,21 +18,37 @@ from inference_source import generate_frames, run_inference
 #   │        • статистика
 #   ├── История событий
 #   └── Футер
+
+# =============================
+#      ИНИЦИАЛИЗАЦИЯ st.session_state
+# =============================
 #
-# st.session_state - это оперативная память сеанса
-
-
-# --- Инициализация состояния ---
-if "history" not in st.session_state:
-	st.session_state.history = []
-
-if "stats" not in st.session_state:
-	st.session_state.stats = {
-		"total": 0,
-		"helmet_no": 0,
-		"mask_no": 0,
-		"critical": 0
-	}
+## st.session_state - это оперативная память сеанса
+#
+## TODO
+# --- 1. Инициализация session_state ---
+#if 'processing_state' not in st.session_state:
+#    st.session_state.processing_state = 'idle' # 'idle', 'running', 'stopped', 'completed'
+#
+# --- 2. Функции обратного вызова ---
+#def set_state_running():
+#    st.session_state.processing_state = 'running'
+#
+#def set_state_stopped():
+#    st.session_state.processing_state = 'stopped'
+#
+## TODO
+# --- История ---
+#if "history" not in st.session_state:
+#	st.session_state.history = []
+#
+#if "stats" not in st.session_state:
+#	st.session_state.stats = {
+#		"total": 0,
+#		"helmet_no": 0,
+#		"mask_no": 0,
+#		"critical": 0
+#	}
 
 # =============================
 #      ЗАГОЛОВОК И ШАПКА
@@ -74,7 +90,7 @@ st.markdown("---")
 
 video = st.file_uploader("Загрузите видео", type=["mp4", "mkv"])
 fps = st.slider("Скорость воспроизведения (кадров/сек)", 1, 30, 2)
-st.checkbox("Enable infrared mode")
+infra_mode = st.checkbox("Enable infrared mode")
 start_button = st.button("▶ Запустить обработку")
 
 
@@ -112,13 +128,28 @@ if start_button and video:
 		frame_placeholder   = st.empty() # область для обновления кадра
 	with col_right:
 		metrics_placeholder = st.empty() # область для статистик
+	
+	# TODO: Остановка цикла, без "отмены" start_button
+	# Нажатие кнопки (в Steamlit) перезапускает весь скрипт,
+	# отменяя прошлое состояние start_button.
+	# Поэтому необходимо применять  `st.session_state`
+	#
+	# pause_button = st.button("⏸ Приостановить обработку")
+	# stop_button = st.button("⏹ Остановить обработку")
+
 	progress = st.progress(0)   # полоса прогресса
 
 	total_frames = 1000  # ЗАГЛУШКА
 	start_time = time.time()
+	
+	if infra_mode:
+		frame_gen = ir_frame_generator(temp_video_path.name)
+	else:
+		frame_gen = frame_generator(temp_video_path.name)
 
 	# обработка по кадрово
-	for frame_id, frame in generate_frames(temp_video_path.name):
+	for frame_id, frame in frame_gen:
+		# Обработка кадра
 		t0 = time.time()
 		res = run_inference(frame_id, frame)
 		t1 = time.time()
@@ -127,6 +158,7 @@ if start_button and video:
 		update_frame(frame_placeholder, frame, frame_id, res)
 		update_metrics(metrics_placeholder, res, t1 - t0)
 	        
+	        # Полоса прогресса под колонками
 		progress.progress((frame_id + 1) / total_frames)
 		
 		# Задержка, чтобы не нагружать.
@@ -139,12 +171,13 @@ if start_button and video:
 # =============================
 #     ИСТОРИЯ СОБЫТИЙ
 # =============================
-
+#
+# TODO
 # === История ===
-if st.session_state.history:
-	st.markdown("---")
-	st.markdown("### История проверок")
-	st.dataframe(st.session_state.history[-10:][::-1], use_container_width=True, hide_index=True)
+#if st.session_state.history:
+#	st.markdown("---")
+#	st.markdown("### История проверок")
+#	st.dataframe(st.session_state.history[-10:][::-1], use_container_width=True, hide_index=True)
 
 # =============================
 #     ПОДВАЛ СТРАНИЦЫ

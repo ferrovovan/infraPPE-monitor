@@ -1,7 +1,7 @@
 # ML
 numpy>=1.21,<2.0
-torch>=2.0,<3.0
-torchvision>=0.15,<0.20
+#torch>=2.0,<3.0
+#torchvision>=0.15,<0.20
 opencv-python>=4.5,<5.0
 # WEB
 streamlit>=1.38,<2.0

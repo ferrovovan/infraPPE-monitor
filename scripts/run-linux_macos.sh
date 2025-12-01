@@ -1,5 +1,16 @@
 #!/bin/bash
 
+
+# Определяем команду python
+if command -v python3 &> /dev/null; then
+    PYTHON_CMD="python3"
+elif command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+else
+    echo "Ошибка: Python не найден"
+    exit 1
+fi
+
 # 1. Активация виртуального окружения
 # Путь к скрипту активации (activate)
 VENV_PATH="./venv"
@@ -15,8 +26,6 @@ fi
 
 # 2. Запуск приложения Python
 echo "Запускаем приложение..."
-# Используем просто команду 'python', так как после активации она указывает на python внутри venv
-#python source/web/app.py
 
 # Мы запускаем модуль 'source.web.app'
 export PYTHONPATH=$PYTHONPATH:.

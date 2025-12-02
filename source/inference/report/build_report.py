@@ -1,0 +1,3 @@
+def build_report(frame_id, workers):
+	...
+	# { "frame_id": ..., "people": [...], "ppe_missing": {...} }

@@ -1,0 +1,7 @@
+[flake8]
+ignore = E101, W191, W291, E221, E265, E128, W293, E124
+max-line-length = 120
+
+# Игнорировать файлы в указанных директориях
+exclude = 
+    source/legacy/

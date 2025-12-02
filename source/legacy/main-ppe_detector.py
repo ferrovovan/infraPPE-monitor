@@ -15,6 +15,13 @@
 # │   # TODO: create report
 # └── detect_ppe(frame_id, frame) -> frame_out, report
 
+from .person_detector import detect_people
+from .cropper import crop_person
+from .ppe_detector_sub import detect_ppe_on_person
+from .bbox_convert import convert_ppe_bboxes
+from .drawer import draw_ppe
+import numpy as np
+
 
 def detect_ppe(frame_id, frame):
 	"""
@@ -73,13 +80,6 @@ def summarize_ppe(local_items):
 		"mask":   "mask"   in classes
 	}
 
-
-from .person_detector import detect_people
-from .cropper import crop_person
-from .ppe_detector_sub import detect_ppe_on_person
-from .bbox_convert import convert_ppe_bboxes
-from .drawer import draw_ppe
-import numpy as np
 
 def detect_ppe(frame_id, frame) -> (np.ndarray, dict):
 	report = {"frame_id": frame_id, "people": []}

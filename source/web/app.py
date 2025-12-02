@@ -123,9 +123,10 @@ def update_metrics(placeholder, report: dict, inf_time: float):
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time*1000:.1f}")
 		if report:
-			for man_stat in report["people"]:
+			for worker_stat in report["people"]:
 				st.metric("Worker id", worker_stat['id'])
-				#st.metric("Обнаружено", man_stat['ppe_detected'])
+				#st.metric("Обнаружено", worker_stat['ppe_detected'])
+
 
 # debug
 DEBUG = False

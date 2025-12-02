@@ -35,4 +35,3 @@ def detect_ppe(frame_id: int, frame):
 	report = build_report(frame_id, workers)
 
 	return frame_out, report
-

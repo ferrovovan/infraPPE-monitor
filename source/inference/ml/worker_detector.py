@@ -32,7 +32,7 @@ def detect_workers(frame: np.ndarray) -> list[Worker]:
 	Обнаруживает людей (рабочих) на кадре с использованием YOLO модели
 	и возвращает структурированный список объектов Worker.
 	"""
-	
+
 	model = load_yolo_model()
 
 	results = model(frame)[0]   # берём результат первого изображения
@@ -66,9 +66,9 @@ def detect_workers(frame: np.ndarray) -> list[Worker]:
 		new_worker: Worker = {
 			'id': worker_id_counter,
 			'bbox': bbox_data,
-			'crop': np.ndarray([]), # Заглушка, будет заполнена позже в 'cropper.py'
-			'ppe_rel': [],          # Заглушка, будет заполнена позже в 'ppe_classifier.py'
-			'ppe': []               # Заглушка, будет заполнена позже
+			'crop': np.ndarray([]),  # Заглушка, будет заполнена позже в 'cropper.py'
+			'ppe_rel': [],           # Заглушка, будет заполнена позже в 'ppe_classifier.py'
+			'ppe': []                # Заглушка, будет заполнена позже
 		}
 
 		workers_list.append(new_worker)

@@ -1,6 +1,6 @@
 # ppe_classifier.py
 import numpy as np
-from ..bbox_types import dBBox, Worker
+from ..bbox_types import dBBox
 from ultralytics import YOLO
 
 
@@ -20,9 +20,9 @@ def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
 	if crop is None or crop.size == 0:
 		# Обработка пустого входного изображения (если заглушка detect_workers вернула пустой np.ndarray)
 		return []
-	
+
 	h, w = crop.shape[:2]
-	
+
 	model = load_yolo_model()
 	results = model.predict(
 		source=crop,
@@ -55,4 +55,3 @@ def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
 		out.append(bbox)
 
 	return out
-

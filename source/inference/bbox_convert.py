@@ -1,5 +1,6 @@
 from .bbox_types import dBBox
 
+
 def convert_ppe_bboxes(ppe_rel: list[dBBox], worker_bbox: dBBox) -> list[dBBox]:
 	abs_list = []
 	for p in ppe_rel:
@@ -11,4 +12,3 @@ def convert_ppe_bboxes(ppe_rel: list[dBBox], worker_bbox: dBBox) -> list[dBBox]:
 		}
 		abs_list.append(ppe_abs_bbox)
 	return abs_list
-

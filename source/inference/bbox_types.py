@@ -15,4 +15,3 @@ Worker = dict(
 	ppe_rel=list[dBBox],       # относительные bbox PPE от классификатора
 	ppe=list[dBBox]            # абсолютные bbox PPE
 )
-

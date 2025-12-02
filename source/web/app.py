@@ -108,22 +108,31 @@ start_button = st.button("▶ Запустить обработку")
 #     ОСНОВНОЙ РАБОЧИЙ ЭКРАН
 # =============================
 
-def update_frame(placeholder, frame, frame_id: int, res: dict):
+def update_frame(placeholder, frame, frame_id: int):
 	with placeholder:
 		placeholder.image(
 			frame,
-			caption=f"Кадр {frame_id}: {res['ppe_detected']}",
+			caption=f"Кадр {frame_id}",
 			channels="BGR"
 		)
 
 
-def update_metrics(placeholder, res: dict, inf_time: float):
+def update_metrics(placeholder, report: dict, inf_time: float):
 	# Используем with placeholder: для очистки контейнера и замены содержимого
 	with placeholder:
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time*1000:.1f}")
-		st.metric("Обнаружено", res['ppe_detected'])
+		if report:
+			for man_stat in report["people"]:
+				st.metric("Worker id", worker_stat['id'])
+				#st.metric("Обнаружено", man_stat['ppe_detected'])
 
+# debug
+DEBUG = False
+if DEBUG:
+	start_button = True
+	DEBUG_FILE_PATH = ""  # абсолютный путь
+	video = open(DEBUG_FILE_PATH, 'rb')
 
 if start_button and video:
 	# Сохраняем видео во временный файл
@@ -162,12 +171,12 @@ if start_button and video:
 	for frame_id, frame in frame_gen:
 		# Обработка кадра
 		t0 = time.time()
-		res = run_inference(frame_id, frame)
+		frame_out, report = run_inference(frame_id, frame)
 		t1 = time.time()
 
 		# Обновление блоков
-		update_frame(frame_placeholder, frame, frame_id, res)
-		update_metrics(metrics_placeholder, res, t1 - t0)
+		update_frame(frame_placeholder, frame_out, frame_id)
+		update_metrics(metrics_placeholder, report, t1 - t0)
 
 	        # Полоса прогресса под колонками
 		progress.progress((frame_id + 1) / total_frames)

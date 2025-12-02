@@ -29,3 +29,6 @@
 
 Подробнее см. [LICENSE](./LICENSE).
 
+##
+![Example](./media/preview.png)
+

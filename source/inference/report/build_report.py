@@ -1,3 +1,3 @@
-def build_report(frame_id, workers):
+def build_report(frame_id, workers) -> dict:
 	...
 	# { "frame_id": ..., "people": [...], "ppe_missing": {...} }

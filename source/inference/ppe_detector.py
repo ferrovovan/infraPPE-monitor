@@ -1,10 +1,13 @@
-# from ..bbox_types import dBBox
+# ppe_detector.py
 from .ml.worker_detector import detect_workers
 from .frame_process.cropper import crop_person
 from .ml.ppe_classifier import detect_ppe_on_worker
 from .bbox_convert import convert_ppe_bboxes
 from .frame_process.drawer import draw_ppe
 from .report.build_report import build_report
+
+from typing import Tuple
+import numpy as np
 
 # Архитектура модуля
 # ppe_detector.py
@@ -20,7 +23,7 @@ from .report.build_report import build_report
 # └── detect_ppe(frame_id, frame) -> frame_out, report
 
 
-def detect_ppe(frame_id: int, frame):
+def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, dict]:
 	workers = detect_workers(frame)
 	
 	for worker in workers:

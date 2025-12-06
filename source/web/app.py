@@ -1,7 +1,7 @@
 import streamlit as st
 import tempfile
 import time
-from inference_source import frame_generator, ir_frame_generator, run_inference
+from inference_source import _frame_generator, _ir_frame_generator, _detect_ppe, _ir_detect_ppe
 
 #   app.py
 #   ├── Заголовок и шапка (строго, минималистично)
@@ -133,6 +133,7 @@ DEBUG = False
 DEBUG = True
 if DEBUG:
 	start_button = True
+	# infra_mode = True
 	DEBUG_FILE_PATH = "/home/vovan/infraPPE-monitor/test_input/in.mp4"  # абсолютный путь
 	video = open(DEBUG_FILE_PATH, 'rb')
 
@@ -174,9 +175,11 @@ if start_button and video:
 	start_time = time.time()
 
 	if infra_mode:
-		frame_gen = ir_frame_generator(video_path)
+		frame_gen = _ir_frame_generator(video_path)
+		run_inference = _ir_detect_ppe
 	else:
-		frame_gen = frame_generator(video_path)
+		frame_gen = _frame_generator(video_path)
+		run_inference = _detect_ppe
 
 	# обработка по кадрово
 	for frame_id, frame in frame_gen:

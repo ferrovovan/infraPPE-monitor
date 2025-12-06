@@ -121,7 +121,7 @@ def update_metrics(placeholder, report: dict, inf_time: float):
 	# Используем with placeholder: для очистки контейнера и замены содержимого
 	with placeholder:
 		st.markdown("### Показатели")
-		st.metric("Инференс (мс)", f"{inf_time*1000:.1f}")
+		st.metric("Инференс (мс)", f"{inf_time * 1000:.1f}")
 		if report:
 			for worker_stat in report["people"]:
 				st.metric("Worker id", worker_stat['id'])
@@ -130,18 +130,28 @@ def update_metrics(placeholder, report: dict, inf_time: float):
 
 # debug
 DEBUG = False
+DEBUG = True
 if DEBUG:
 	start_button = True
-	DEBUG_FILE_PATH = ""  # абсолютный путь
+	DEBUG_FILE_PATH = "/home/vovan/infraPPE-monitor/test_input/in.mp4"  # абсолютный путь
 	video = open(DEBUG_FILE_PATH, 'rb')
 
-if start_button and video:
+
+def save_temp_video():
 	# Сохраняем видео во временный файл
 	temp_video_path = tempfile.NamedTemporaryFile(
 		delete=False  # , suffix=".mp4"
 	)
 	temp_video_path.write(video.read())
 	temp_video_path.close()
+	return temp_video_path.name
+
+
+if start_button and video:
+	if DEBUG:
+		video_path = DEBUG_FILE_PATH
+	else:
+		video_path = save_temp_video()
 
 	# окошки
 	col_left, col_right = st.columns([1.3, 1])	
@@ -164,9 +174,9 @@ if start_button and video:
 	start_time = time.time()
 
 	if infra_mode:
-		frame_gen = ir_frame_generator(temp_video_path.name)
+		frame_gen = ir_frame_generator(video_path)
 	else:
-		frame_gen = frame_generator(temp_video_path.name)
+		frame_gen = frame_generator(video_path)
 
 	# обработка по кадрово
 	for frame_id, frame in frame_gen:

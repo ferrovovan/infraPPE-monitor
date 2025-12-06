@@ -8,7 +8,7 @@ ultralytics>=8.3.0,<9.0.0
 #
 # ML
 numpy>=1.24.4,<2.0.0; python_version <= '3.10'
-torch>=2.0<2.4.1; python_version <= '3.10'
+torch>=2.0,<2.4.1; python_version <= '3.10'
 torchvision>=0.15.2,<0.19; python_version <= '3.10'
 opencv-python>=4.10,<5.0; python_version <= '3.10'
 # WEB

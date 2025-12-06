@@ -1,14 +1,7 @@
 # ppe_classifier.py
 import numpy as np
 from ..bbox_types import dBBox
-from ultralytics import YOLO
-
-
-# Грузим модель один раз (оптимально)
-def load_yolo_model():
-	model_path = "yolov8n.pt"
-	yolo_model = YOLO(model_path)
-	return yolo_model
+from .models_loader import load_ppe_detect_model
 
 
 def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
@@ -23,13 +16,13 @@ def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
 
 	h, w = crop.shape[:2]
 
-	model = load_yolo_model()
+	model = load_ppe_detect_model()
 	results = model.predict(
 		source=crop,
-		verbose=False,
-		conf=0.25  # можешь регулировать
+		verbose=True,
+		conf=0.25  # уверенность предсказания
 	)
-	preds = results[0]
+	preds = results[0]  # Для 1-ого и единственного кадра
 	out: list[dBBox] = []
 
 	# Создаем фиктивный bbox для каски, используя тип dBBox

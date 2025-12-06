@@ -5,7 +5,7 @@ from .ml.ppe_classifier import detect_ppe_on_worker
 from .bbox_convert import convert_ppe_bboxes
 from .frame_process.drawer import draw_ppe
 from .report.build_report import build_report
-from .ml.ir_switch import switch_to_normal
+from .frame_process.ir_switch import switch_to_normal
 
 from typing import Tuple
 import numpy as np

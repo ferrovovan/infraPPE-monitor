@@ -20,7 +20,7 @@ def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
 	results = model.predict(
 		source=crop,
 		verbose=True,
-		conf=0.25  # уверенность предсказания
+		conf=0.35  # уверенность предсказания
 	)
 	preds = results[0]  # Для 1-ого и единственного кадра
 	out: list[dBBox] = []

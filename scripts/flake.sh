@@ -24,12 +24,18 @@ else
     exit 1
 fi
 
-# 2. Запуск приложения Python
-echo "Запускаем линтер flake8..."
+# 3. Проверка наличия линтера
+if command -v flake8 &> /dev/null; then
+    echo "Линтер flake8 найден. Продолжаем выполнение скрипта."
+else
+    echo "Ошибка: flake8 не установлен в текущем виртуальном окружении."
+    echo "Пожалуйста, установите его (например, 'pip install flake8' или 'pip install .[devel]')."
+    exit 1
+fi
 
-# Мы запускаем модуль 'source.web.app'
+# 3. Запуск flake8
+echo "Запускаем линтер flake8..."
 export PYTHONPATH=$PYTHONPATH:.
 flake8 source/
 
 # Примечание: окружение остается активным только в рамках выполнения этого скрипта.
-

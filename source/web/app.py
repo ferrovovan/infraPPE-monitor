@@ -1,6 +1,10 @@
 import streamlit as st
 import tempfile
 import time
+# DEVELOPMENT
+import sys  # Для включения DEBUG
+from pathlib import Path  # Для нахождения "test_input/in.mp4"
+#
 from inference_source import _frame_generator, _ir_frame_generator, _detect_ppe, _ir_detect_ppe
 
 #   app.py
@@ -105,6 +109,23 @@ start_button = st.button("▶ Запустить обработку")
 
 
 # =============================
+#     DEVEL config
+# =============================
+DEVEL = False
+user_args = sys.argv[1:]
+if user_args:
+	DEVEL = ("devel" in user_args)
+	infra_mode = ("infra_mode" in user_args)
+
+if DEVEL:
+	start_button = True
+	# infra_mode = True
+	# Точно знаем что находимся здесь: "infraPPE-monitor")
+	DEVEL_FILE_PATH = Path.cwd() / Path("test_input/in.mp4")
+	video = open(DEVEL_FILE_PATH, 'rb')
+
+
+# =============================
 #     ОСНОВНОЙ РАБОЧИЙ ЭКРАН
 # =============================
 
@@ -128,16 +149,6 @@ def update_metrics(placeholder, report: dict, inf_time: float):
 				#st.metric("Обнаружено", worker_stat['ppe_detected'])
 
 
-# debug
-DEBUG = False
-DEBUG = True
-if DEBUG:
-	start_button = True
-	# infra_mode = True
-	DEBUG_FILE_PATH = "/home/vovan/infraPPE-monitor/test_input/in.mp4"  # абсолютный путь
-	video = open(DEBUG_FILE_PATH, 'rb')
-
-
 def save_temp_video():
 	# Сохраняем видео во временный файл
 	temp_video_path = tempfile.NamedTemporaryFile(
@@ -149,8 +160,8 @@ def save_temp_video():
 
 
 if start_button and video:
-	if DEBUG:
-		video_path = DEBUG_FILE_PATH
+	if DEVEL:
+		video_path = DEVEL_FILE_PATH
 	else:
 		video_path = save_temp_video()
 

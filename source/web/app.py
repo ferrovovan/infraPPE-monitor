@@ -104,6 +104,7 @@ st.markdown("---")
 
 video = st.file_uploader("Загрузите видео", type=["mp4", "mkv"])
 fps = st.slider("Скорость воспроизведения (кадров/сек)", 1, 30, 2)
+skip_frame_rate = st.slider("skip frames rate", 0, 60, 15)
 infra_mode = st.checkbox("Enable infrared mode")
 start_button = st.button("▶ Запустить обработку")
 
@@ -121,7 +122,8 @@ if DEVEL:
 	start_button = True
 	# infra_mode = True
 	# Точно знаем что находимся здесь: "infraPPE-monitor")
-	DEVEL_FILE_PATH = Path.cwd() / Path("test_input/in.mp4")
+	#DEVEL_FILE_PATH = Path.cwd() / Path("test_input/in.mp4")
+	DEVEL_FILE_PATH = Path.cwd() / Path("test_input/Anthem_to_Workwear_and_Its_Protective_Role_in_the_RAP_Style.mp4")
 	video = open(DEVEL_FILE_PATH, 'rb')
 
 
@@ -184,10 +186,10 @@ if start_button and video:
 	start_time = time.time()
 
 	if infra_mode:
-		frame_gen = _ir_frame_generator(video_path)
+		frame_gen = _ir_frame_generator(video_path, skip_frame_rate)
 		run_inference = _ir_detect_ppe
 	else:
-		frame_gen = _frame_generator(video_path)
+		frame_gen = _frame_generator(video_path, skip_frame_rate)
 		run_inference = _detect_ppe
 
 	# обработка по кадрово

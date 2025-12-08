@@ -143,10 +143,8 @@ def update_metrics(placeholder, report: dict, inf_time: float):
 	with placeholder:
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time * 1000:.1f}")
-		if report:
-			for worker_stat in report["people"]:
-				st.metric("Worker id", worker_stat['id'])
-				#st.metric("Обнаружено", worker_stat['ppe_detected'])
+		st.markdown("### Отчёт")
+		st.write(report)
 
 
 def save_temp_video():

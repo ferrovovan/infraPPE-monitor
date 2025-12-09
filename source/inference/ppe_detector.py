@@ -10,6 +10,9 @@ from .frame_process.ir_switch import switch_to_normal
 from typing import Tuple
 import numpy as np
 
+from typing import Tuple
+import numpy as np
+
 # Архитектура модуля
 # ppe_detector.py
 # │   # take frame
@@ -32,7 +35,7 @@ def ir_detect_ppe(frame_id: int, frame: np.ndarray):
 
 def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, dict]:
 	workers: list = detect_workers(frame)
-	
+
 	for worker in workers:
 		worker["crop"] = crop_person(frame, worker["bbox"])
 		

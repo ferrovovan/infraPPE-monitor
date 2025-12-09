@@ -10,6 +10,6 @@ def load_ppe_detect_model():
 
 
 def load_worker_detect_model():
-	model_path = "models/yolov8n.pt"
+	model_path = "models/yolov8s-pose.pt"
 	yolo_model = YOLO(model_path)
 	return yolo_model

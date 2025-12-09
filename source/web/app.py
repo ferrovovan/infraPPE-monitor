@@ -103,8 +103,14 @@ st.markdown("---")
 # =============================
 
 video = st.file_uploader("Загрузите видео", type=["mp4", "mkv"])
-fps = st.slider("Скорость воспроизведения (кадров/сек)", 1, 30, 2)
-skip_frame_rate = st.slider("skip frames rate", 0, 60, 15)
+fps = st.slider(
+	"Скорость воспроизведения (сек/кадр)",
+	min_value=0.0,
+	max_value=10.0,
+	value=2.0,
+	step=0.2
+)
+skip_frame_rate = st.slider("skip frames rate", 0, 60, 10)
 infra_mode = st.checkbox("Enable infrared mode")
 start_button = st.button("▶ Запустить обработку")
 
@@ -122,7 +128,7 @@ if DEVEL:
 	start_button = True
 	# infra_mode = True
 	# Точно знаем что находимся здесь: "infraPPE-monitor")
-	#DEVEL_FILE_PATH = Path.cwd() / Path("test_input/in.mp4")
+	# DEVEL_FILE_PATH = Path.cwd() / Path("test_input/in.mp4")  # Old test input
 	DEVEL_FILE_PATH = Path.cwd() / Path("test_input/Anthem_to_Workwear_and_Its_Protective_Role_in_the_RAP_Style.mp4")
 	video = open(DEVEL_FILE_PATH, 'rb')
 
@@ -166,7 +172,7 @@ if start_button and video:
 		video_path = save_temp_video()
 
 	# окошки
-	col_left, col_right = st.columns([1.3, 1])	
+	col_left, col_right = st.columns([1.3, 1])
 	with col_left:
 		frame_placeholder   = st.empty()  # область для обновления кадра
 	with col_right:
@@ -195,19 +201,20 @@ if start_button and video:
 	# обработка по кадрово
 	for frame_id, frame in frame_gen:
 		# Обработка кадра
-		t0 = time.time()
+		int_start_time = time.time()
 		frame_out, report = run_inference(frame_id, frame)
-		t1 = time.time()
+		inference_time = time.time() - int_start_time
 
 		# Обновление блоков
 		update_frame(frame_placeholder, frame_out, frame_id)
-		update_metrics(metrics_placeholder, report, t1 - t0)
+		update_metrics(metrics_placeholder, report, inference_time)
 
 	        # Полоса прогресса под колонками
 		progress.progress((frame_id + 1) / total_frames)
 
 		# Задержка, чтобы не нагружать.
-		time.sleep(1.0 / fps)
+		if inference_time < fps:
+			time.sleep(fps - inference_time)
 
 	total_time = time.time() - start_time
 	st.success("Обработка завершена за {total_time:.1f} секунд!")

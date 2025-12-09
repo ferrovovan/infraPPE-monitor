@@ -57,7 +57,8 @@ def draw_ppe(frame: np.ndarray, workers: list[Worker]) -> np.ndarray:
 
 			# Опционально: надпись для PPE
 			if ppe.get("label"):
-				cv2.putText(out, ppe["label"], (ppe_p1[0], ppe_p1[1] - 5),
+				text_pos = (p1[0] + 5, p1[1] - 10)
+				cv2.putText(out, ppe["label"], text_pos,
 					cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1
 				)
 	return out

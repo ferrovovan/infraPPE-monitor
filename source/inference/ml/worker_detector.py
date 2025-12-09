@@ -1,12 +1,6 @@
 import numpy as np
 from ..bbox_types import dBBox, Worker
-from ultralytics import YOLO
-
-
-def load_yolo_model():
-	model_path = "yolov8n.pt"
-	yolo_model = YOLO(model_path)
-	return yolo_model
+from .models_loader import load_worker_detect_model
 
 
 def detect_workers_dummy(frame: np.ndarray) -> list[Worker]:
@@ -33,10 +27,14 @@ def detect_workers(frame: np.ndarray) -> list[Worker]:
 	и возвращает структурированный список объектов Worker.
 	"""
 
-	model = load_yolo_model()
-
-	results = model(frame)[0]   # берём результат первого изображения
-	boxes = results.boxes       # ultralytics Boxes()
+	model = load_worker_detect_model()
+	results = model.predict(
+		source=frame,
+		verbose=True,
+		conf=0.75  # уверенность предсказания
+	)
+	preds = results[0]   # Для 1-ого и единственного кадра
+	boxes = preds.boxes  # ultralytics Boxes()
 
 	workers_list: list[Worker] = []
 	worker_id_counter = 1

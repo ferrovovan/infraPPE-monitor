@@ -5,7 +5,8 @@ from pathlib import Path  # Для нахождения "test_input/{video}"
 #
 from ui.layout import render_header, render_futer
 from ui.components import render_upload_panel
-from player.player import run_player
+from run_modes.video_player import run_video_player
+from run_modes.picture_show import run_picture_show
 
 # Карта оркестратора
 #   app.py
@@ -23,79 +24,62 @@ from player.player import run_player
 #   ├── История событий
 #   └── Футер
 
-# =============================
-#      ИНИЦИАЛИЗАЦИЯ st.session_state
-# =============================
-#
-# st.session_state - это оперативная память сеанса
 
-# Инициализация состояний обработки
-if 'processing_state' not in st.session_state:
-	st.session_state.processing_state = 'idle'  # 'idle', 'running', 'paused', 'stopped'
-	st.session_state.pause_flag = False
-	st.session_state.stop_flag = False
-
-# =============================
-#     КОЛЛБЭКИ ДЛЯ УПРАВЛЕНИЯ ПРОИГРЫВАТЕЛЕМ
-# =============================
+def init_state():
+	# Инициализация состояний обработки
+	if 'processing_state' not in st.session_state:
+		st.session_state.processing_state = 'idle'  # 'idle', 'running', 'paused', 'stopped'
+		st.session_state.pause_flag = False
+		st.session_state.stop_flag = False
 
 
-def pause_processing():
-    """Поставить обработку на паузу"""
-    if st.session_state.processing_state == 'running':
-        st.session_state.processing_state = 'paused'
-        st.session_state.pause_flag = True
-    elif st.session_state.processing_state == 'paused':
-        st.session_state.processing_state = 'running'
-        st.session_state.pause_flag = False
+if __name__ == '__main__':
+	init_state()
+	render_header()
 
+	params = render_upload_panel()
 
-def stop_processing():
-    """Полностью остановить обработку"""
-    st.session_state.processing_state = 'stopped'
-    st.session_state.stop_flag = True
-    st.session_state.pause_flag = False
+	# DEVEL 🗿shortcut🗿
+	DEVEL = False
+	user_args = sys.argv[1:]
+	if user_args:
+		DEVEL = ("devel" in user_args)
+		params["infra_mode"] = ("infra_mode" in user_args)
+	if DEVEL:
+		params["start_button"] = True
+		# params["infra_mode"] = True
+		params["file_type"] = "picture"
+		# params["file_type"] = "video"
 
+		# Точно знаем что находимся здесь: "infraPPE-monitor")
+		if params["file_type"] == "video":
+			# DEVEL_FILE = "in.mp4"
+			DEVEL_FILE = "Anthem_to_Workwear_and_Its_Protective_Role_in_the_RAP_Style.mp4"
+		elif params["file_type"] == "picture":
+			DEVEL_FILE = "AdobeStock_157192266.jpg"
+		else:
+			print("Сломался DEVEL")
 
-# =============================
-#      ЗАГОЛОВОК И ШАПКА
-# =============================
-render_header()
+		DEVEL_FILE_PATH = Path.cwd() / Path(f"test_input/{DEVEL_FILE}")
+		params["file_path"] = str(DEVEL_FILE_PATH)
+		open(DEVEL_FILE_PATH, 'rb')  # без открытия ничего не выйдет
 
+	if params["start_button"]:
+		if params["file_type"] == "picture":
+			picture_params = {
+				"picture_path": params["file_path"],
+				"infra_mode": params["infra_mode"]
+			}
+			run_picture_show(**picture_params)
+		elif params["file_type"] == "video":
+			video_params = {
+				"video_path": params["file_path"],
+				"fps": params["fps"],
+				"skip_frame_rate": params["skip_frame_rate"],
+				"infra_mode": params["infra_mode"]
+			}
+			run_video_player(**video_params)
+		else:
+			st.text("Нет сценария запуска")
 
-# =============================
-#      ПАНЕЛЬ ПАРАМЕТРОВ
-# =============================
-video, fps, skip_frame_rate, infra_mode, start_button, pause_button, stop_button = render_upload_panel()
-
-
-# =============================
-#     DEVEL config
-# =============================
-DEVEL = False
-user_args = sys.argv[1:]
-if user_args:
-	DEVEL = ("devel" in user_args)
-	infra_mode = ("infra_mode" in user_args)
-
-if DEVEL:
-	start_button = True
-	# infra_mode = True
-	# Точно знаем что находимся здесь: "infraPPE-monitor")
-	# DEVEL_FILE_PATH = Path.cwd() / Path("test_input/in.mp4")  # Old test input
-	DEVEL_FILE_PATH = Path.cwd() / Path("test_input/Anthem_to_Workwear_and_Its_Protective_Role_in_the_RAP_Style.mp4")
-	video = open(DEVEL_FILE_PATH, 'rb')
-else:
-	DEVEL_FILE_PATH = ""
-
-
-# =============================
-#     ОСНОВНОЙ РАБОЧИЙ ЭКРАН
-# =============================
-run_player(video, fps, skip_frame_rate, infra_mode, start_button, DEVEL, DEVEL_FILE_PATH)
-
-
-# =============================
-#     ПОДВАЛ СТРАНИЦЫ
-# =============================
-render_futer()
+	render_futer()

@@ -81,7 +81,6 @@ def build_report(
 	}
 
 	return report
-
 # Пример выхода
 # {
 #     "frame_id": 123,

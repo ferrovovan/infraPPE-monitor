@@ -10,9 +10,6 @@ from .frame_process.ir_switch import switch_to_normal
 from typing import Tuple
 import numpy as np
 
-from typing import Tuple
-import numpy as np
-
 # Архитектура модуля
 # ppe_detector.py
 # │   # take frame

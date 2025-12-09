@@ -1,7 +1,11 @@
 import streamlit as st
 import tempfile
 import time
-from inference_source import frame_generator, ir_frame_generator, run_inference
+# DEVELOPMENT
+import sys  # Для включения DEBUG
+from pathlib import Path  # Для нахождения "test_input/in.mp4"
+#
+from inference_source import _frame_generator, _ir_frame_generator, _detect_ppe, _ir_detect_ppe
 
 #   app.py
 #   ├── Заголовок и шапка (строго, минималистично)
@@ -100,8 +104,27 @@ st.markdown("---")
 
 video = st.file_uploader("Загрузите видео", type=["mp4", "mkv"])
 fps = st.slider("Скорость воспроизведения (кадров/сек)", 1, 30, 2)
+skip_frame_rate = st.slider("skip frames rate", 0, 60, 15)
 infra_mode = st.checkbox("Enable infrared mode")
 start_button = st.button("▶ Запустить обработку")
+
+
+# =============================
+#     DEVEL config
+# =============================
+DEVEL = False
+user_args = sys.argv[1:]
+if user_args:
+	DEVEL = ("devel" in user_args)
+	infra_mode = ("infra_mode" in user_args)
+
+if DEVEL:
+	start_button = True
+	# infra_mode = True
+	# Точно знаем что находимся здесь: "infraPPE-monitor")
+	#DEVEL_FILE_PATH = Path.cwd() / Path("test_input/in.mp4")
+	DEVEL_FILE_PATH = Path.cwd() / Path("test_input/Anthem_to_Workwear_and_Its_Protective_Role_in_the_RAP_Style.mp4")
+	video = open(DEVEL_FILE_PATH, 'rb')
 
 
 # =============================
@@ -121,27 +144,26 @@ def update_metrics(placeholder, report: dict, inf_time: float):
 	# Используем with placeholder: для очистки контейнера и замены содержимого
 	with placeholder:
 		st.markdown("### Показатели")
-		st.metric("Инференс (мс)", f"{inf_time*1000:.1f}")
-		if report:
-			for worker_stat in report["people"]:
-				st.metric("Worker id", worker_stat['id'])
-				#st.metric("Обнаружено", worker_stat['ppe_detected'])
+		st.metric("Инференс (мс)", f"{inf_time * 1000:.1f}")
+		st.markdown("### Отчёт")
+		st.write(report)
 
 
-# debug
-DEBUG = False
-if DEBUG:
-	start_button = True
-	DEBUG_FILE_PATH = ""  # абсолютный путь
-	video = open(DEBUG_FILE_PATH, 'rb')
-
-if start_button and video:
+def save_temp_video():
 	# Сохраняем видео во временный файл
 	temp_video_path = tempfile.NamedTemporaryFile(
 		delete=False  # , suffix=".mp4"
 	)
 	temp_video_path.write(video.read())
 	temp_video_path.close()
+	return temp_video_path.name
+
+
+if start_button and video:
+	if DEVEL:
+		video_path = DEVEL_FILE_PATH
+	else:
+		video_path = save_temp_video()
 
 	# окошки
 	col_left, col_right = st.columns([1.3, 1])	
@@ -164,9 +186,11 @@ if start_button and video:
 	start_time = time.time()
 
 	if infra_mode:
-		frame_gen = ir_frame_generator(temp_video_path.name)
+		frame_gen = _ir_frame_generator(video_path, skip_frame_rate)
+		run_inference = _ir_detect_ppe
 	else:
-		frame_gen = frame_generator(temp_video_path.name)
+		frame_gen = _frame_generator(video_path, skip_frame_rate)
+		run_inference = _detect_ppe
 
 	# обработка по кадрово
 	for frame_id, frame in frame_gen:

@@ -5,6 +5,7 @@ from .ml.ppe_classifier import detect_ppe_on_worker
 from .bbox_convert import convert_ppe_bboxes
 from .frame_process.drawer import draw_ppe
 from .report.build_report import build_report
+from .frame_process.ir_switch import switch_to_normal
 
 from typing import Tuple
 import numpy as np
@@ -21,10 +22,16 @@ import numpy as np
 # ├── build_report(frame_id, workers) -> report
 # │   #
 # └── detect_ppe(frame_id, frame) -> frame_out, report
+REQUIRED_PPE = ["Hardhat", "Mask"]
+
+
+def ir_detect_ppe(frame_id: int, frame: np.ndarray):
+	normal_frame = switch_to_normal(frame)
+	return detect_ppe(frame_id, normal_frame)
 
 
 def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, dict]:
-	workers = detect_workers(frame)
+	workers: list = detect_workers(frame)
 	
 	for worker in workers:
 		worker["crop"] = crop_person(frame, worker["bbox"])
@@ -35,6 +42,6 @@ def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, dict]:
 	
 	frame_out = draw_ppe(frame, workers)
 
-	report = build_report(frame_id, workers)
+	report = build_report(frame_id, workers, REQUIRED_PPE)
 
 	return frame_out, report

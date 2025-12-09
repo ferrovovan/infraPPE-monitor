@@ -2,11 +2,14 @@ import streamlit as st
 import tempfile
 import time
 # DEVELOPMENT
-import sys  # Для включения DEBUG
-from pathlib import Path  # Для нахождения "test_input/in.mp4"
+import sys  # Для включения DEVEL
+from pathlib import Path  # Для нахождения "test_input/{video}"
 #
 from inference_source import _frame_generator, _ir_frame_generator, _detect_ppe, _ir_detect_ppe
+from ui.layout import render_header, render_futer
+from ui.components import render_upload_panel
 
+# Карта оркестратора
 #   app.py
 #   ├── Заголовок и шапка (строго, минималистично)
 #   ├── Панель параметров
@@ -28,91 +31,44 @@ from inference_source import _frame_generator, _ir_frame_generator, _detect_ppe,
 #
 # st.session_state - это оперативная память сеанса
 
-# # TODO
-#  --- 1. Инициализация session_state ---
-# if 'processing_state' not in st.session_state:
-#     st.session_state.processing_state = 'idle'
-#     # 'idle', 'running', 'stopped', 'completed'
-#
-#  --- 2. Функции обратного вызова ---
-# def set_state_running():
-#     st.session_state.processing_state = 'running'
-#
-# def set_state_stopped():
-#     st.session_state.processing_state = 'stopped'
-#
-# # TODO
-#  --- История ---
-# if "history" not in st.session_state:
-# 	st.session_state.history = []
-#
-# if "stats" not in st.session_state:
-# 	st.session_state.stats = {
-# 		"total": 0,
-# 		"helmet_no": 0,
-# 		"mask_no": 0,
-# 		"critical": 0
-# 	}
-#
+# Инициализация состояний обработки
+if 'processing_state' not in st.session_state:
+	st.session_state.processing_state = 'idle'  # 'idle', 'running', 'paused', 'stopped'
+	st.session_state.pause_flag = False
+	st.session_state.stop_flag = False
+
+# =============================
+#     КОЛЛБЭКИ ДЛЯ УПРАВЛЕНИЯ ОБРАБОТКОЙ
+# =============================
+
+
+def pause_processing():
+    """Поставить обработку на паузу"""
+    if st.session_state.processing_state == 'running':
+        st.session_state.processing_state = 'paused'
+        st.session_state.pause_flag = True
+    elif st.session_state.processing_state == 'paused':
+        st.session_state.processing_state = 'running'
+        st.session_state.pause_flag = False
+
+
+def stop_processing():
+    """Полностью остановить обработку"""
+    st.session_state.processing_state = 'stopped'
+    st.session_state.stop_flag = True
+    st.session_state.pause_flag = False
+
+
 # =============================
 #      ЗАГОЛОВОК И ШАПКА
 # =============================
-
-# === Настройка страницы ===
-st.set_page_config(
-	page_title="CV-10 | Контроль СИЗ в ИК-диапазоне",
-	page_icon="helmet",  # обычный эмодзи — работает
-	layout="wide"
-)
-
-# === Стили ===
-st.markdown("""
-<style>
-	.big-font {font-size: 42px !important;
-	 font-weight: bold; color: #1E3A8A;}
-	.risk-low {background-color: #DCFCE7; padding: 20px;
-	 border-radius: 12px; border-left: 6px solid #22C55E;}
-	.risk-medium {background-color: #FEF3C7; padding: 20px;
-	 border-radius: 12px; border-left: 6px solid #F59E0B;}
-	.risk-high {background-color: #FEE2E2; padding: 20px;
-	 border-radius: 12px; border-left: 6px solid #EF4444;}
-	.header-box {
-		background: linear-gradient(90deg, #1E3A8A, #3B82F6);
-		padding: 25px;
-		border-radius: 15px;
-		color: white;
-		text-align: center;
-	}
-</style>
-""", unsafe_allow_html=True)
-
-# шапка
-header_html = """
-<div class="header-box">
-    <h1>CV-10: ИИ-контроль СИЗ</h1>
-    <p>Работает в полной темноте, дыму и тумане</p>
-</div>
-"""
-st.markdown(header_html, unsafe_allow_html=True)
-# st.title("PPE Monitor — Prototype")
-st.markdown("---")
+render_header()
 
 
 # =============================
 #      ПАНЕЛЬ ПАРАМЕТРОВ
 # =============================
-
-video = st.file_uploader("Загрузите видео", type=["mp4", "mkv"])
-fps = st.slider(
-	"Скорость воспроизведения (сек/кадр)",
-	min_value=0.0,
-	max_value=10.0,
-	value=2.0,
-	step=0.2
-)
-skip_frame_rate = st.slider("skip frames rate", 0, 60, 10)
-infra_mode = st.checkbox("Enable infrared mode")
-start_button = st.button("▶ Запустить обработку")
+video, fps, skip_frame_rate, infra_mode, start_button, pause_button, stop_button = render_upload_panel()
 
 
 # =============================
@@ -188,7 +144,11 @@ if start_button and video:
 
 	progress = st.progress(0)   # полоса прогресса
 
-	total_frames = 1000  # ЗАГЛУШКА
+	st.session_state.processing_state = 'running'
+	st.session_state.pause_flag = False
+	st.session_state.stop_flag = False
+
+	total_frames = 1000         # ЗАГЛУШКА
 	start_time = time.time()
 
 	if infra_mode:
@@ -200,6 +160,9 @@ if start_button and video:
 
 	# обработка по кадрово
 	for frame_id, frame in frame_gen:
+		if st.session_state.stop_flag:
+			st.info("Обработка остановлена пользователем")
+			break
 		# Обработка кадра
 		int_start_time = time.time()
 		frame_out, report = run_inference(frame_id, frame)
@@ -221,28 +184,6 @@ if start_button and video:
 
 
 # =============================
-#     ИСТОРИЯ СОБЫТИЙ
-# =============================
-#
-# TODO
-# === История ===
-# if st.session_state.history:
-#	st.markdown("---")
-#	st.markdown("### История проверок")
-#	st.dataframe(
-#               st.session_state.history[-10:][::-1],
-#               use_container_width=True, hide_index=True
-#       )
-
-# =============================
 #     ПОДВАЛ СТРАНИЦЫ
 # =============================
-
-# === Футер ===
-st.markdown("---")
-st.markdown(
-	"<p style='text-align: center; color: grey;'>"
-	"CV-10 • ИИ-контроль СИЗ в ИК-диапазоне"  # • Работает без интернета
-	"</p>",
-	unsafe_allow_html=True
-)
+render_futer()

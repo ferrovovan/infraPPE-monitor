@@ -25,12 +25,21 @@ class Drawer:
 	
 	def __init__(self, scale_factor: float):
 		self.font = cv2.FONT_HERSHEY_SIMPLEX
-		self.font_scale = 0.9 * scale_factor
-		self.font_thickness = int(2 * scale_factor)
-		self.text_bg_color = (255, 0, 0)  # Синий фон под текстом
+		self.font_scale = 0.8 * scale_factor
+		# Толщина шрифта:  пропорциональна scale_factor
+		self.font_thickness = int(1 * scale_factor)
+		# Толщина рамки: чуть больше толщины шрифта
+		self.box_thickness = int(4.0 * scale_factor)
+		
+		# Отступы и смещения тоже масштабируются
+		self.text_padding = int(5 * scale_factor)
+		self.text_vertical_offset = int(25 * scale_factor)
+
+		# Цвета
+		self.text_bg_color = (255, 0, 0)   # Синий фон под текстом
 		self.text_color = (255, 255, 255)  # Белый текст
-		self.worker_color = (255, 0, 0)    # Синий
-		self.ppe_color = (0, 255, 0)       # Зеленый
+		self.worker_color = (255, 0, 0)    # Синий для рабочих
+		self.ppe_color = (0, 255, 0)       # Зеленый для СИЗ
 
 	def _calculate_text_position(self, coords: Tuple[Point, Point]) -> Tuple[int, int]:
 		"""
@@ -44,11 +53,13 @@ class Drawer:
 		"""
 		p1, p2 = coords
 		x_center = (p1.x + p2.x) // 2
-		y_top = p1.y - 10 if p1.y > 20 else p1.y + 10
+		y_top = p1.y - self.text_vertical_offset
+		0 if y_top < 0 else y_top
 		return (x_center, y_top)
 
 	def _draw_text_with_background(self, frame: np.ndarray, text: str, 
-								position: Tuple[int, int]) -> np.ndarray:
+		position: Tuple[int, int]
+	) -> np.ndarray:
 		"""
 		Рисует текст с фоном для лучшей читаемости.
 		
@@ -88,7 +99,8 @@ class Drawer:
 		return frame
 
 	def draw_bbox(self, frame: np.ndarray, coords: Tuple[Point, Point], 
-				color: Tuple[int, int, int], thickness: int) -> np.ndarray:
+		color: Tuple[int, int, int]
+	) -> np.ndarray:
 		"""
 		Рисует bounding box на изображении.
 		
@@ -101,7 +113,7 @@ class Drawer:
 		Returns:
 			Изображение с нарисованной рамкой
 		"""
-		cv2.rectangle(frame, coords[0], coords[1], color, thickness)
+		cv2.rectangle(frame, coords[0], coords[1], color, self.box_thickness)
 		return frame
 
 	def draw_worker(self, frame: np.ndarray, coords: Tuple[Point, Point], 
@@ -118,7 +130,7 @@ class Drawer:
 			Изображение с нарисованным рабочим
 		"""
 		# Рисуем рамку
-		frame = self.draw_bbox(frame, coords, self.worker_color, self.font_thickness)
+		frame = self.draw_bbox(frame, coords, self.worker_color)
 		
 		# Рисуем текст с ID
 		text = f"Worker ID: {worker_id}"
@@ -141,14 +153,14 @@ class Drawer:
 			Изображение с нарисованным СИЗ
 		"""
 		# Рисуем рамку
-		frame = self.draw_bbox(frame, coords, self.ppe_color, self.font_thickness)
+		frame = self.draw_bbox(frame, coords, self.ppe_color)
 		
 		# Рисуем текст с меткой СИЗ
 		if ppe_label:
 			text = f"PPE: {ppe_label}"
 			text_position = self._calculate_text_position(coords)
 			# Смещаем текст немного вниз, чтобы не перекрывать рамку рабочего
-			text_position = (text_position[0], text_position[1] + 30)
+			text_position = (text_position[0], text_position[1])
 			frame = self._draw_text_with_background(frame, text, text_position)
 		
 		return frame

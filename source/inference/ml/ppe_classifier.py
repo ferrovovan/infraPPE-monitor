@@ -21,19 +21,23 @@ def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
 	results = model.predict(
 		source=crop,
 		verbose=True,
-		conf=0.50  # уверенность предсказания
+		conf=0.70  # уверенность предсказания
 	)
 	preds: Results = results[0]  # Для 1-ого и единственного кадра
 
 	ppe_list: list[dBBox] = []
 	for box in preds.boxes:
+		class_value = int(box.cls[0])
+		label: str = preds.names[class_value]
+
+		if label in ["Person", "machinery", "vehicle"]:
+			# Пропускаем не СИЗ
+			continue
+
 		xyxy = box.xyxy[0].cpu().numpy()
 		x1, y1, x2, y2 = map(int, xyxy)
 		
 		conf_value = float(box.conf[0])
-		class_value = int(box.cls[0])
-		label: str = preds.names[class_value]
-		print(f"label = {label}")
 
 		ppe_bbox: dBBox = {
 			"x1": max(0, min(x1, w - 1)),

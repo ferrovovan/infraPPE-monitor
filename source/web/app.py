@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
+# app.py
+
 import streamlit as st
 # DEVELOPMENT
 import sys  # Для включения DEVEL

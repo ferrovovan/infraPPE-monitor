@@ -1,4 +1,8 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
 # bbox_types.py
+
 from __future__ import annotations  # Делает аннотации строками до рантайма
 from typing import TypedDict  # Optional нужен для совместимости
 import numpy as np

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
 # build_report.py
 from typing import Dict, List
 from ..bbox_types import Worker

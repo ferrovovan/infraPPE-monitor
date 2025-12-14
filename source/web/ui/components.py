@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
+# components.py
+
 import streamlit as st
 import tempfile
 from .state_manager import pause_processing, stop_processing

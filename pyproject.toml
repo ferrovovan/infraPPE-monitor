@@ -3,11 +3,11 @@
 
 [project]
 name = "infraPPE-monitor"
-version = "0.2.0"
+version = "0.2.2"
 description = "AI module for detecting PPE compliance from infrared video in low-visibility conditions"
 requires-python = ">=3.8, <3.14"
 readme = "README.md"
-license = {text = "GNU GPLv3"}
+license = {text = "GNU GPLv3 only"}
 
 
 dependencies = [

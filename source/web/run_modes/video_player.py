@@ -1,4 +1,7 @@
-# player.py
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
+# video_player.py
 
 import streamlit as st
 import time

@@ -1,4 +1,8 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
 # models_loader.py
+
 from ultralytics import YOLO
 
 

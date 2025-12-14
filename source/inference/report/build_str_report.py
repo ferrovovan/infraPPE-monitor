@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
 # build_str_report_extended.py
 from typing import Dict, Literal
 from .report_type import Report

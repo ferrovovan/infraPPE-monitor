@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
 # ppe_detector.py
 
 from .frame_process.ir_switch import ir_to_jet, ir_to_gray

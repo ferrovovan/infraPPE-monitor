@@ -58,8 +58,7 @@ if __name__ == '__main__':
 
 		# Точно знаем что находимся здесь: "infraPPE-monitor")
 		if params["file_type"] == "video":
-			# DEVEL_FILE = "in.mp4"
-			...
+			DEVEL_FILE = "test_in.mp4"
 		elif params["file_type"] == "picture":
 			DEVEL_FILE = "KMZ_switch_shop.jpg"
 		else:

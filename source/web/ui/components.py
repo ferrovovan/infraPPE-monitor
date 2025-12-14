@@ -29,11 +29,11 @@ def render_upload_panel():
 	fps = st.slider(
 		"Скорость воспроизведения (сек/кадр)",
 		min_value=0.0,
-		max_value=10.0,
+		max_value=5.0,
 		value=2.0,
 		step=0.2
 	)
-	skip_frame_rate = st.slider("skip frames rate", 0, 60, 10)
+	skip_frame_rate = st.slider("skip frames rate", 0, 60, 45)
 	infra_mode = st.checkbox("Enable infrared mode")
 
 	start_button = st.button("▶ Запустить обработку")

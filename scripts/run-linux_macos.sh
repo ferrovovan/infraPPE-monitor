@@ -31,8 +31,8 @@ echo "Запускаем приложение..."
 
 # Мы запускаем модуль 'source.web.app'
 export PYTHONPATH=$PYTHONPATH:.
-# streamlit run source/web/app.py
-streamlit run source/web/app.py "devel"
+streamlit run source/web/app.py
+# streamlit run source/web/app.py "devel"
 
 # Примечание: окружение остается активным только в рамках выполнения этого скрипта.
 

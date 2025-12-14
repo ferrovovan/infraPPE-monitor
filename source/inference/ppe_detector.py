@@ -27,7 +27,7 @@ import numpy as np
 # └── detect_ppe(frame_id, frame) -> frame_out, report
 
 REQUIRED_PPE = ["Hardhat"]
-LOCATION = "Lehrproduktion"
+LOCATION = "Цех стрелочных переводов КМЗ"
 
 
 def ir_detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, str]:

@@ -18,7 +18,7 @@ def update_metrics(placeholder, html_report, inf_time: float):
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time * 1000:.1f}")
 		st.markdown("### Отчёт")
-		st.html(report)
+		st.html(html_report)
 
 
 def run_picture_show(picture_path, infra_mode):

@@ -56,7 +56,7 @@ if __name__ == '__main__':
 			# DEVEL_FILE = "in.mp4"
 			DEVEL_FILE = "Anthem_to_Workwear_and_Its_Protective_Role_in_the_RAP_Style.mp4"
 		elif params["file_type"] == "picture":
-			DEVEL_FILE = "AdobeStock_157192266.jpg"
+			DEVEL_FILE = "KMZ_switch_shop.jpg"
 		else:
 			print("Сломался DEVEL")
 

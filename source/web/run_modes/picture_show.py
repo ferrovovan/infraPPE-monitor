@@ -4,10 +4,10 @@ import streamlit as st
 import time
 #
 from .inference_source import (
-	_picture_taker
-	_ir_picture_taker
-	_detect_ppe
-	_ir_detect_ppe
+	_picture_taker,
+	_ir_picture_taker,
+	_detect_ppe,
+	_ir_detect_ppe,
 )
 
 

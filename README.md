@@ -46,4 +46,4 @@
 
 ##
 ![Example](./media/preview.png)
-
+![Usage](./media/usage_1.png)

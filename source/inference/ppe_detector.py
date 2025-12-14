@@ -3,7 +3,7 @@
 #
 # ppe_detector.py
 
-from .frame_process.ir_switch import ir_to_jet, ir_to_gray
+from .frame_process.ir_switch import ir_to_gray
 from .ml.worker_detector import detect_workers
 from .frame_process.cropper import crop_person
 from .ml.ppe_classifier import detect_ppe_on_worker

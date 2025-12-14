@@ -13,12 +13,13 @@ def update_frame(placeholder, frame):
 		)
 
 
-def update_metrics(placeholder, report: dict, inf_time: float):
+def update_metrics(placeholder, report, inf_time: float):
 	with placeholder:
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time * 1000:.1f}")
 		st.markdown("### Отчёт")
-		st.write(report)
+		#st.write(report)
+		st.html(report)
 
 
 def run_picture_show(picture_path, infra_mode):

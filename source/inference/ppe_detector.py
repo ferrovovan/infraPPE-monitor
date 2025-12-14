@@ -1,11 +1,14 @@
 # ppe_detector.py
+from .frame_process.ir_switch import switch_to_normal
 from .ml.worker_detector import detect_workers
 from .frame_process.cropper import crop_person
 from .ml.ppe_classifier import detect_ppe_on_worker
 from .bbox_convert import convert_ppe_bboxes
 from .frame_process.drawer import draw_ppe
 from .report.build_report import build_report
-from .frame_process.ir_switch import switch_to_normal
+from .report.build_str_report import build_html_report
+#from .report.build_str_report import build_quick_report, build_html_report
+
 
 from typing import Tuple
 import numpy as np
@@ -43,5 +46,8 @@ def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, dict]:
 	frame_out = draw_ppe(frame, workers)
 
 	report = build_report(frame_id, workers, REQUIRED_PPE)
+	
+	#str_report = build_quick_report(report, "Metal House")
+	str_report = build_html_report(report, "Metal House")
 
-	return frame_out, report
+	return frame_out, str_report

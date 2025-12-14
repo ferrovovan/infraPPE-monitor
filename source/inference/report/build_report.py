@@ -69,8 +69,8 @@ def build_report(
 
 	# 3. Итоговая сводка
 	summary: FrameSummary = {
-		"total": len(workers),
-		"violations": violation_count
+		"workers_count": len(workers),
+		"violations_count": violation_count
 	}
 
 	# Итоговая структура Report

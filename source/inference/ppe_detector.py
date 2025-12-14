@@ -21,11 +21,13 @@ import numpy as np
 # ├── [cycle] detect_ppe_on_worker(cropped_image) -> list[bbox_ppe_rel]
 # ├── [cycle] convert_ppe_bboxes(worker_ppe_rel_bboxes, worker_bbox) -> list[worker_ppe_bbox_absolute]
 # ├── draw_ppe(frame, workers) -> frame_out
-# │   # TODO: report
-# ├── build_report(frame_id, workers) -> report
+# │   #
+# ├── build_report(frame_id, workers) -> raw_report: dict
+# ├── build_html_report(raw_report, LOCATION) -> html_report: str
 # │   #
 # └── detect_ppe(frame_id, frame) -> frame_out, report
-REQUIRED_PPE = ["Hardhat", "Mask"]
+REQUIRED_PPE = ["Hardhat"]
+LOCATION = "Lehrproduktion"
 
 
 def ir_detect_ppe(frame_id: int, frame: np.ndarray):
@@ -33,7 +35,7 @@ def ir_detect_ppe(frame_id: int, frame: np.ndarray):
 	return detect_ppe(frame_id, normal_frame)
 
 
-def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, dict]:
+def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, str]:
 	workers: list = detect_workers(frame)
 
 	for worker in workers:
@@ -45,9 +47,7 @@ def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, dict]:
 	
 	frame_out = draw_ppe(frame, workers)
 
-	report = build_report(frame_id, workers, REQUIRED_PPE)
-	
-	#str_report = build_quick_report(report, "Metal House")
-	str_report = build_html_report(report, "Metal House")
+	raw_report = build_report(frame_id, workers, REQUIRED_PPE)
+	html_report = build_html_report(raw_report, LOCATION)
 
-	return frame_out, str_report
+	return frame_out, html_report

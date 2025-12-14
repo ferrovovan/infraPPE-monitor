@@ -23,13 +23,13 @@ def update_frame(placeholder, frame, frame_id: int):
 		)
 
 
-def update_metrics(placeholder, report: dict, inf_time: float):
+def update_metrics(placeholder, html_report: str, inf_time: float):
 	# Используем with placeholder: для очистки контейнера и замены содержимого
 	with placeholder:
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time * 1000:.1f}")
 		st.markdown("### Отчёт")
-		st.write(report)
+		st.html(html_report)
 
 
 def run_video_player(video_path, fps, skip_frame_rate, infra_mode):
@@ -71,12 +71,12 @@ def run_video_player(video_path, fps, skip_frame_rate, infra_mode):
 			break
 		# Обработка кадра
 		int_start_time = time.time()
-		frame_out, report = run_inference(frame_id, frame)
+		frame_out, html_report = run_inference(frame_id, frame)
 		inference_time = time.time() - int_start_time
 
 		# Обновление блоков
 		update_frame(frame_placeholder, frame_out, frame_id)
-		update_metrics(metrics_placeholder, report, inference_time)
+		update_metrics(metrics_placeholder, html_report, inference_time)
 
 		# Полоса прогресса под колонками
 		progress.progress((frame_id + 1) / total_frames)

@@ -13,12 +13,11 @@ def update_frame(placeholder, frame):
 		)
 
 
-def update_metrics(placeholder, report, inf_time: float):
+def update_metrics(placeholder, html_report, inf_time: float):
 	with placeholder:
 		st.markdown("### Показатели")
 		st.metric("Инференс (мс)", f"{inf_time * 1000:.1f}")
 		st.markdown("### Отчёт")
-		#st.write(report)
 		st.html(report)
 
 
@@ -40,9 +39,9 @@ def run_picture_show(picture_path, infra_mode):
 	frame = pict_take(picture_path)
 	# Обработка "кадра"
 	int_start_time = time.time()
-	frame_out, report = run_pict_inference(1, frame)
+	frame_out, html_report = run_pict_inference(1, frame)
 	inference_time = time.time() - int_start_time
 
 	# Обновление блоков
 	update_frame(frame_placeholder, frame_out)
-	update_metrics(metrics_placeholder, report, inference_time)
+	update_metrics(metrics_placeholder, html_report, inference_time)

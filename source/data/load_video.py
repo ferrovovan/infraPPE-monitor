@@ -1,7 +1,7 @@
 # load_video.py
 
 import cv2
-from source.data.simulate_ir import rgb_to_ir
+from .simulate_ir import rgb_to_ir
 
 
 def _base_video_generator(video_path: str, skip_rate: int = 1):
@@ -39,7 +39,7 @@ def frame_generator(video_path: str, skip_rate: int = 1):
 
 def ir_frame_generator(video_path: str, skip_rate: int = 1):
 	"""
-	Публичный генератор ИК-кадров. Применяет трансформацию.
+	Публичный генератор симуляции ИК-кадров. Применяет трансформацию.
 	"""
 	for idx, frame in _base_video_generator(video_path, skip_rate):
 		ir_frame = rgb_to_ir(frame)

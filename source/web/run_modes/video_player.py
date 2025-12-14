@@ -1,4 +1,5 @@
 # player.py
+
 import streamlit as st
 import time
 #
@@ -19,7 +20,7 @@ def update_frame(placeholder, frame, frame_id: int):
 		placeholder.image(
 			frame,
 			caption=f"Кадр {frame_id}",
-			channels="BGR"
+			channels="RGB"
 		)
 
 

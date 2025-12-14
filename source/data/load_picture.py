@@ -28,7 +28,7 @@ def picture_taker(picture_path: str):
 
 def ir_picture_taker(picture_path: str):
 	"""
-	Публичный открыватель ИК-изображений. Применяет трансформацию.
+	Публичный открыватель симуляции ИК-изображений. Применяет трансформацию.
 	"""
 	frame = _base_picture_taker(picture_path)
 	return rgb_to_ir(frame)

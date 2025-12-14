@@ -1,24 +1,8 @@
+# worker_detector.py
+
 import numpy as np
 from ..bbox_types import dBBox, Worker
 from .models_loader import load_worker_detect_model
-
-
-def detect_workers_dummy(frame: np.ndarray) -> list[Worker]:
-	# Заглушка для демонстрации структуры возвращаемых данных,
-	# если модель еще не загружена
-	dummy_bbox_data = {"x1": 100, "y1": 100, "x2": 200, "y2": 300, "conf": 0.9, "label": "person"}
-	# Используем пустой массив numpy в качестве заглушки для crop
-	dummy_crop = np.zeros((100, 100, 3), dtype=np.uint8) 
-
-	return [
-		{
-			'id': 1,
-			'bbox': dummy_bbox_data,
-			'crop': dummy_crop,
-			'ppe_rel': [],
-			'ppe': []
-		}
-	]
 
 
 def detect_workers(frame: np.ndarray) -> list[Worker]:

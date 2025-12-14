@@ -1,14 +1,23 @@
+# simulate_ir.py
+
 import cv2
+import numpy as np
 
 
-def rgb_to_ir(rgb_frame):
+def rgb_to_ir(rgb_frame: np.ndarray) -> np.ndarray:
 	"""
-	Простая заглушка для имитирования ИК-изображений
+	Имитирует ИК-изображение из RGB.
+	Возвращает одноканальное 16-битное изображение (тип uint16).
 	"""
-	# TODO: Правильное ИК-изображение  бит.
-	# ИК-кадр - это 1 канал 12/16
-	# А сейчас выдаётся цветное изображение - псевдо-RGB (3 канала, 8 бит)
-	# Это не правильно!
+	# Преобразуем в оттенки серого (8 бит)
 	gray = cv2.cvtColor(rgb_frame, cv2.COLOR_BGR2GRAY)
-	ir_sim = cv2.applyColorMap(gray, cv2.COLORMAP_INFERNO)
-	return ir_sim
+	
+	# Масштабируем до 16 бит (0-65535) и нормализуем
+	# Используем разные коэффициенты для имитации ИК-характеристик
+	ir_16bit = (gray.astype(np.float32) * 257).astype(np.uint16)
+
+	# Имитируем ИК-характеристики: усиливаем темные области
+	# (в ИК-изображениях обычно лучше видны теплые объекты)
+	ir_16bit = cv2.normalize(ir_16bit, None, 0, 65535, cv2.NORM_MINMAX)
+
+	return ir_16bit

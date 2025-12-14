@@ -47,14 +47,14 @@ if __name__ == '__main__':
 		params["infra_mode"] = ("infra_mode" in user_args)
 	if DEVEL:
 		params["start_button"] = True
-		# params["infra_mode"] = True
+		#params["infra_mode"] = True
 		params["file_type"] = "picture"
 		# params["file_type"] = "video"
 
 		# Точно знаем что находимся здесь: "infraPPE-monitor")
 		if params["file_type"] == "video":
 			# DEVEL_FILE = "in.mp4"
-			DEVEL_FILE = "Anthem_to_Workwear_and_Its_Protective_Role_in_the_RAP_Style.mp4"
+			...
 		elif params["file_type"] == "picture":
 			DEVEL_FILE = "KMZ_switch_shop.jpg"
 		else:

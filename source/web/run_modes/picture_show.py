@@ -1,15 +1,21 @@
 # picture_show.py
+
 import streamlit as st
 import time
 #
-from .inference_source import _picture_taker, _ir_picture_taker, _detect_ppe, _ir_detect_ppe
+from .inference_source import (
+	_picture_taker
+	_ir_picture_taker
+	_detect_ppe
+	_ir_detect_ppe
+)
 
 
 def update_frame(placeholder, frame):
 	with placeholder:
 		placeholder.image(
 			frame,
-			channels="BGR"
+			channels="RGB"
 		)
 
 
@@ -30,10 +36,10 @@ def run_picture_show(picture_path, infra_mode):
 		metrics_placeholder = st.empty()  # область для статистик
 
 	if infra_mode:
-		pict_take = _picture_taker
+		pict_take = _ir_picture_taker
 		run_pict_inference = _ir_detect_ppe
 	else:
-		pict_take = _ir_picture_taker
+		pict_take = _picture_taker
 		run_pict_inference = _detect_ppe
 
 	frame = pict_take(picture_path)

@@ -21,13 +21,14 @@ def _base_video_generator(video_path: str, skip_rate: int = 1):
 
 	idx = 0
 	while True:
-		ret, frame = cap.read()
+		ret, frame_bgr = cap.read()
 		if not ret:
 			break
 		
 		# # Пропускаем кадры в соответствии с skip_rate
 		if idx % skip_rate == 0:
-			yield idx, frame
+			frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
+			yield idx, frame_rgb
 
 		idx += 1
 	cap.release()

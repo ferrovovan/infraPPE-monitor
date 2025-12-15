@@ -1,5 +1,7 @@
 #!/bin/bash
-
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
 
 # Определяем команду python
 if command -v python3 &> /dev/null; then
@@ -30,6 +32,7 @@ echo "Запускаем приложение..."
 # Мы запускаем модуль 'source.web.app'
 export PYTHONPATH=$PYTHONPATH:.
 streamlit run source/web/app.py
+# streamlit run source/web/app.py "devel"
 
 # Примечание: окружение остается активным только в рамках выполнения этого скрипта.
 

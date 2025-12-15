@@ -1,10 +1,19 @@
-# from ..bbox_types import dBBox
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
+# ppe_detector.py
+
+from .frame_process.ir_switch import ir_to_gray
 from .ml.worker_detector import detect_workers
 from .frame_process.cropper import crop_person
 from .ml.ppe_classifier import detect_ppe_on_worker
 from .bbox_convert import convert_ppe_bboxes
 from .frame_process.drawer import draw_ppe
 from .report.build_report import build_report
+from .report.build_str_report import build_html_report
+
+from typing import Tuple
+import numpy as np
 
 # Архитектура модуля
 # ppe_detector.py
@@ -14,15 +23,24 @@ from .report.build_report import build_report
 # ├── [cycle] detect_ppe_on_worker(cropped_image) -> list[bbox_ppe_rel]
 # ├── [cycle] convert_ppe_bboxes(worker_ppe_rel_bboxes, worker_bbox) -> list[worker_ppe_bbox_absolute]
 # ├── draw_ppe(frame, workers) -> frame_out
-# │   # TODO: report
-# ├── build_report(frame_id, workers) -> report
+# │   #
+# ├── build_report(frame_id, workers) -> raw_report: dict
+# ├── build_html_report(raw_report, LOCATION) -> html_report: str
 # │   #
 # └── detect_ppe(frame_id, frame) -> frame_out, report
 
+REQUIRED_PPE = ["Hardhat"]
+LOCATION = "Цех стрелочных переводов КМЗ"
 
-def detect_ppe(frame_id: int, frame):
-	workers = detect_workers(frame)
-	
+
+def ir_detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, str]:
+	rgb_frame = ir_to_gray(frame)
+	return detect_ppe(frame_id, rgb_frame)
+
+
+def detect_ppe(frame_id: int, frame: np.ndarray) -> Tuple[np.ndarray, str]:
+	workers: list = detect_workers(frame)
+
 	for worker in workers:
 		worker["crop"] = crop_person(frame, worker["bbox"])
 		
@@ -32,6 +50,7 @@ def detect_ppe(frame_id: int, frame):
 	
 	frame_out = draw_ppe(frame, workers)
 
-	report = build_report(frame_id, workers)
+	raw_report = build_report(frame_id, workers, REQUIRED_PPE)
+	html_report = build_html_report(raw_report, LOCATION)
 
-	return frame_out, report
+	return frame_out, html_report

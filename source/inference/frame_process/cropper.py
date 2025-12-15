@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
 # cropper.py
 import numpy as np
 from ..bbox_types import dBBox

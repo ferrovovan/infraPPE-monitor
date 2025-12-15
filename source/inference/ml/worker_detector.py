@@ -1,30 +1,11 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
+# worker_detector.py
+
 import numpy as np
 from ..bbox_types import dBBox, Worker
-from ultralytics import YOLO
-
-
-def load_yolo_model():
-	model_path = "yolov8n.pt"
-	yolo_model = YOLO(model_path)
-	return yolo_model
-
-
-def detect_workers_dummy(frame: np.ndarray) -> list[Worker]:
-	# Заглушка для демонстрации структуры возвращаемых данных,
-	# если модель еще не загружена
-	dummy_bbox_data = {"x1": 100, "y1": 100, "x2": 200, "y2": 300, "conf": 0.9, "label": "person"}
-	# Используем пустой массив numpy в качестве заглушки для crop
-	dummy_crop = np.zeros((100, 100, 3), dtype=np.uint8) 
-
-	return [
-		{
-			'id': 1,
-			'bbox': dummy_bbox_data,
-			'crop': dummy_crop,
-			'ppe_rel': [],
-			'ppe': []
-		}
-	]
+from .models_loader import load_worker_detect_model
 
 
 def detect_workers(frame: np.ndarray) -> list[Worker]:
@@ -33,10 +14,14 @@ def detect_workers(frame: np.ndarray) -> list[Worker]:
 	и возвращает структурированный список объектов Worker.
 	"""
 
-	model = load_yolo_model()
-
-	results = model(frame)[0]   # берём результат первого изображения
-	boxes = results.boxes       # ultralytics Boxes()
+	model = load_worker_detect_model()
+	results = model.predict(
+		source=frame,
+		verbose=True,
+		conf=0.75  # уверенность предсказания
+	)
+	preds = results[0]   # Для 1-ого и единственного кадра
+	boxes = preds.boxes  # ultralytics Boxes()
 
 	workers_list: list[Worker] = []
 	worker_id_counter = 1

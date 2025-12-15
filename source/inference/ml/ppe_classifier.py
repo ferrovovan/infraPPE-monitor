@@ -1,14 +1,12 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+#
 # ppe_classifier.py
+
 import numpy as np
+from ultralytics.engine.results import Results
 from ..bbox_types import dBBox
-from ultralytics import YOLO
-
-
-# Грузим модель один раз (оптимально)
-def load_yolo_model():
-	model_path = "yolov8n.pt"
-	yolo_model = YOLO(model_path)
-	return yolo_model
+from .models_loader import load_ppe_detect_model
 
 
 def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
@@ -23,35 +21,36 @@ def detect_ppe_on_worker(crop: np.ndarray) -> list[dBBox]:
 
 	h, w = crop.shape[:2]
 
-	model = load_yolo_model()
+	model = load_ppe_detect_model()
 	results = model.predict(
 		source=crop,
-		verbose=False,
-		conf=0.25  # можешь регулировать
+		verbose=True,
+		conf=0.70  # уверенность предсказания
 	)
-	preds = results[0]
-	out: list[dBBox] = []
+	preds: Results = results[0]  # Для 1-ого и единственного кадра
 
-	# Создаем фиктивный bbox для каски, используя тип dBBox
-	# Конвертируем относительные координаты в нужный формат словаря
-
+	ppe_list: list[dBBox] = []
 	for box in preds.boxes:
+		class_value = int(box.cls[0])
+		label: str = preds.names[class_value]
+
+		if label in ["Person", "machinery", "vehicle"]:
+			# Пропускаем не СИЗ
+			continue
+
 		xyxy = box.xyxy[0].cpu().numpy()
 		x1, y1, x2, y2 = map(int, xyxy)
+		
+		conf_value = float(box.conf[0])
 
-		conf = float(box.conf[0].cpu().numpy())
-		cls_id = int(box.cls[0].cpu().numpy())
-		label = preds.names[cls_id]
-
-		bbox: dBBox = {
+		ppe_bbox: dBBox = {
 			"x1": max(0, min(x1, w - 1)),
 			"y1": max(0, min(y1, h - 1)),
 			"x2": max(0, min(x2, w - 1)),
 			"y2": max(0, min(y2, h - 1)),
-			"conf": conf,
+			"conf": conf_value,
 			"label": label
 		}
+		ppe_list.append(ppe_bbox)
 
-		out.append(bbox)
-
-	return out
+	return ppe_list

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2025 ferrovovan
+
 set -euo pipefail
 
 # Проверка, что есть папка assets в текущей директории

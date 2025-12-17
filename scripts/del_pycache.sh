@@ -1,6 +1,6 @@
 #!/bin/bash
 # -*- coding: utf-8 -*-
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-only
 # Copyright (C) 2025 ferrovovan
 
 # Рекурсивно удаляет все __pycache__ директории в source/

@@ -47,13 +47,17 @@
 
 ## 🧾 License
 
-This project is licensed under the **GNU General Public License v3.0 only (GPL-3.0-only)**.  
+# License
+
+This project is licensed under the **GNU Affero General Public License v3.0 only (AGPL-3.0-only)**.  
+
 This license guarantees the freedom to use, study, modify, and distribute the software,  
-but prohibits incorporating it into closed commercial products without disclosing the source code.
+and requires that any modified versions or network-accessible deployments  
+also make their source code available under the same license.
 
 See the full text in [LICENSE](./LICENSE).
 
-**SPDX Identifier:** `GPL-3.0-only`
+**SPDX Identifier:** `AGPL-3.0-only`
 
 ##
 ![Example](./media/preview.png)

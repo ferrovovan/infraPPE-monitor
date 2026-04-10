@@ -58,3 +58,9 @@ See the full text in [LICENSE](./LICENSE).
 ##
 ![Example](./media/preview.png)
 ![Usage](./media/usage_1.png)
+
+
+## Docker
+* Сборка: `sudo docker build -t infra4ppe-monitor:latest .`
+* Запуск: `sudo docker run -p 8501:8501 infra4ppe-monitor:latest`
+

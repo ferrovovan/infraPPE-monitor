@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Труд-Зрение — Открытая платформа контроля СИЗ</title>
+    <style>
+        :root {
+            --bg: #0a0e14;
+            --surface: #131820;
+            --border: #1e2a38;
+            --primary: #39bae6;
+            --accent: #ff8f40;
+            --text: #bfc7d6;
+            --text-bright: #e5e9f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero h1 {
+            font-size: 2.6rem;
+            color: #fff;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .hero .tagline {
+            font-size: 1.15rem;
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        .badge-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+        .badge {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-bright);
+        }
+        .badge.accent {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Demo CTA */
+        .demo-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent);
+            color: #0a0e14;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .demo-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255,143,64,0.25);
+        }
+        .demo-cta .arrow { font-size: 1.2rem; }
+
+        /* QR Section */
+        .qr-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin: 40px auto;
+            max-width: 500px;
+            text-align: center;
+        }
+        .qr-section h3 {
+            font-size: 1rem;
+            color: var(--text-bright);
+            margin-bottom: 20px;
+        }
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            background: #fff;
+            margin: 0 auto 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .qr-url {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--primary);
+            word-break: break-all;
+        }
+
+        /* Sections */
+        section { padding: 48px 0; border-bottom: 1px solid var(--border); }
+        section h2 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        section h2::before {
+            content: '';
+            position: absolute;
+            left: -16px;
+            top: 4px;
+            width: 4px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        section p { margin-bottom: 14px; }
+
+        /* Feature Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 24px;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 22px;
+        }
+        .card h4 {
+            color: #fff;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+        .card p { font-size: 0.9rem; margin: 0; }
+
+        /* Comparison Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            text-align: left;
+        }
+        th {
+            background: var(--surface);
+            color: var(--text-bright);
+            font-weight: 600;
+        }
+        td.highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #555;
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 1.8rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .hero { padding: 50px 0 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+    <div class="container">
+        <div class="badge-row">
+            <span class="badge">Open Source</span>
+            <span class="badge accent">Контроль СИЗ</span>
+            <span class="badge">Промышленное CV</span>
+            <span class="badge">On‑Premise</span>
+        </div>
+        <h1>Труд-Зрение</h1>
+        <p class="tagline">
+            Открытая платформа компьютерного зрения для автоматического контроля средств индивидуальной защиты на производстве. Прозрачно. Локально. Доступно.
+        </p>
+        <a class="demo-cta" href="http://77.105.162.97/" target="_blank">
+            🎥 Живое демо <span class="arrow">→</span>
+        </a>
+    </div>
+</header>
+
+<!-- QR -->
+<section>
+    <div class="container">
+        <div class="qr-section">
+            <h3>📱 Отсканируйте для демо с телефона</h3>
+            <div class="qr-code">
+                <!-- Замени src на ссылку на твой QR. Можно сгенерировать через qr-code-styling или любой сервис -->
+                <img src="media/qr-code.png" alt="QR-код на демо" width="160" height="160" style="border-radius:8px;">
+            </div>
+            <p class="qr-url">http://77.105.162.97/</p>
+        </div>
+    </div>
+</section>
+
+<!-- Проблема и решение -->
+<section>
+    <div class="container">
+        <h2>Какую проблему решаем</h2>
+        <p>Средние заводы (выручка 400 млн – 5 млрд руб.) обязаны контролировать ношение СИЗ. Штраф Ростехнадзора — до 1 млн рублей. Но существующие решения стоят от 5 до 100 млн руб. и запирают клиента в закрытой экосистеме с облачной подпиской.</p>
+        <p><strong>Мы даём альтернативу:</strong> работающий детектор СИЗ с открытым кодом, который разворачивается на сервере завода, не требует интернета и стоит на порядок дешевле — цену инжиниринга, а не лицензии.</p>
+    </div>
+</section>
+
+<!-- Ключевые фичи -->
+<section>
+    <div class="container">
+        <h2>Что умеет платформа</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h4>🎯 5 классов СИЗ</h4>
+                <p>Каска, респиратор/маска, защитные очки, спецодежда, перчатки. Контроль наличия и правильности ношения.</p>
+            </div>
+            <div class="card">
+                <h4>🌙 Видимый + ИК спектр</h4>
+                <p>Работает с обычными камерами и тепловизорами. Полная темнота, дым, пыль, туман — не помеха.</p>
+            </div>
+            <div class="card">
+                <h4>⚡ 25 FPS на RTX 3060</h4>
+                <p>Реальный темп без задержек. Docker-контейнер, экспорт в ONNX — интеграция с Macroscop, Линия, Trassir.</p>
+            </div>
+            <div class="card">
+                <h4>🔓 Open Source (Apache 2.0)</h4>
+                <p>Код полностью открыт. Можно аудировать, дорабатывать, не зависеть от вендора. Никаких облаков.</p>
+            </div>
+            <div class="card">
+                <h4>📦 Russian Industry Dataset</h4>
+                <p>Открытый датасет из реальных цехов — каски, спецодежда, низкий свет. Каждый завод может пополнять его.</p>
+            </div>
+            <div class="card">
+                <h4>⏱ Адаптация за 1 час</h4>
+                <p>200–300 кадров с цеха заказчика — и модель дообучена под конкретные условия. Выезд одного инженера.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Сравнение -->
+<section>
+    <div class="container">
+        <h2>Мы против конкурентов</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Параметр</th>
+                    <th>Труд-Зрение (мы)</th>
+                    <th>VizorLabs</th>
+                    <th>CAMAI / NEURUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Стоимость входа</td>
+                    <td class="highlight">150–400 тыс. руб.</td>
+                    <td>500 тыс. – 1,5 млн (пилот)</td>
+                    <td>150 тыс. – 5 млн руб.</td>
+                </tr>
+                <tr>
+                    <td>Код</td>
+                    <td class="highlight">Открыт (Apache 2.0)</td>
+                    <td>Закрыт</td>
+                    <td>Закрыт</td>
+                </tr>
+                <tr>
+                    <td>Привязка к облаку</td>
+                    <td class="highlight">Нет (on‑premise)</td>
+                    <td>Обязательна</td>
+                    <td>Частично / облако</td>
+                </tr>
+                <tr>
+                    <td>Работа в дыму/темноте</td>
+                    <td class="highlight">Да (ИК + видимый)</td>
+                    <td>Ограниченно</td>
+                    <td>Есть у CAMAI (ИК)</td>
+                </tr>
+                <tr>
+                    <td>Открытый датасет</td>
+                    <td class="highlight">Да</td>
+                    <td>Нет</td>
+                    <td>Нет</td>
+                </tr>
+                <tr>
+                    <td>Скорость адаптации</td>
+                    <td class="highlight">~1 час</td>
+                    <td>Недели / месяцы</td>
+                    <td>Дни / недели</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Дорожная карта -->
+<section>
+    <div class="container">
+        <h2>План развития (12 месяцев)</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h4>Месяцы 1–3</h4>
+                <p>MVP, открытие репозитория, пилотная площадка (завод-партнёр), сбор первых данных.</p>
+            </div>
+            <div class="card">
+                <h4>Месяцы 4–6</h4>
+                <p>Первое коммерческое внедрение, референс, публикация датасета v1.</p>
+            </div>
+            <div class="card">
+                <h4>Месяцы 7–9</h4>
+                <p>3+ внедрения, выступление на БИОТ / Металл-Экспо, партнёрство с интеграторами.</p>
+            </div>
+            <div class="card">
+                <h4>Месяцы 10–12</h4>
+                <p>Enterprise-сборка, выход в регионы СФО, заявка на грант ФСИ.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Контакты -->
+<!--
+<footer>
+    <div class="container">
+        <p>
+            <a href="https://github.com/YOUR_ORG/trud-zrenie" target="_blank">GitHub</a> ·
+            <a href="https://t.me/YOUR_HANDLE" target="_blank">Telegram</a> ·
+            <a href="mailto:YOU@example.com">E-mail</a>
+        </p>
+        <p style="margin-top:12px;">© 2025 Труд-Зрение. Apache 2.0 License.</p>
+    </div>
+</footer>
+-->
+
+</body>
+</html>
